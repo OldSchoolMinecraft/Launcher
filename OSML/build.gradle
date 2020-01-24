@@ -1,0 +1,13 @@
+apply plugin: 'java'
+apply plugin: 'eclipse'
+
+repositories
+{
+    jcenter()
+    mavenCentral()
+}
+
+dependencies
+{
+	compile group: 'org.json', name: 'json', version: '20190722'
+}
