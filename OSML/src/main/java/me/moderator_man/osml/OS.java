@@ -9,11 +9,11 @@ public enum OS
 	
 	public static OS getOS()
 	{
-		String flag = System.getProperty("os.name");
+		String flag = System.getProperty("os.name").toLowerCase();
 		
 		if (flag.contains("win"))
 			return OS.Windows;
-		if (flag.contains("mac"))
+		if (flag.contains("osx"))
 			return OS.Mac;
 		if (flag.contains("unix"))
 			return OS.Linux;
