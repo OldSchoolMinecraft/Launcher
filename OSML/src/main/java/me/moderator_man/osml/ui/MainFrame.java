@@ -204,8 +204,12 @@ public class MainFrame
 					Main.config.rememberPassword = true;
 					Main.config.username = txtUsername.getText();
 					Main.config.password = String.valueOf(txtPassword.getPassword());
-					Main.saveConfig();
 				}
+				
+				Main.config.rememberPassword = cbRememberPassword.isSelected();
+				Main.config.username = "If you are seeing this, hello!";
+				Main.config.password = "Would you like me to tell you about our lord and savior Jesus Christ?";
+				Main.saveConfig();
 				
 				new Launcher().launch(txtUsername.getText().trim(), QueryAPI.getNewSession(txtUsername.getText(), String.valueOf(txtPassword.getPassword())));
 			}
