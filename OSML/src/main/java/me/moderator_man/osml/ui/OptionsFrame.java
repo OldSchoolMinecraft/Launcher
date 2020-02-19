@@ -81,12 +81,14 @@ public class OptionsFrame extends JDialog
 			backgroundPanel.add(btnSaveClose);
 			
 			JCheckBox cbKeepOpen = new JCheckBox("Keep launcher open");
+			cbKeepOpen.setEnabled(false);
 			cbKeepOpen.setForeground(Color.WHITE);
 			cbKeepOpen.setOpaque(false);
 			cbKeepOpen.setBounds(164, 7, 121, 23);
 			backgroundPanel.add(cbKeepOpen);
 			
 			JCheckBox cbOpenOutput = new JCheckBox("Open output log");
+			cbOpenOutput.setEnabled(false);
 			cbOpenOutput.setForeground(Color.WHITE);
 			cbOpenOutput.setOpaque(false);
 			cbOpenOutput.setBounds(164, 27, 121, 23);
