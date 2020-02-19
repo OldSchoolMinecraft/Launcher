@@ -15,8 +15,8 @@ public enum OS
 			return OS.Windows;
 		if (flag.contains("osx"))
 			return OS.Mac;
-		if (flag.contains("unix"))
-			return OS.Linux;
+		if (flag.contains("nix") || flag.contains("nux")) // os.name on Linux is basically "Linux", but
+			return OS.Linux;                          // but I'll the unix part stay just to be sure
 		return OS.Unsupported;
 	}
 }
