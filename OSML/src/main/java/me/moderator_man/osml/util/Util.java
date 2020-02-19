@@ -1,13 +1,31 @@
 package me.moderator_man.osml.util;
 
+import java.awt.Desktop;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.net.URI;
 import java.security.MessageDigest;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class Util
 {
+	/*
+	 * Thank you JuliusVan for the most retarded term known to man (netpage).
+	 */
+	public static void openNetpage(String url)
+	{
+		if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE))
+		{
+		    try
+			{
+				Desktop.getDesktop().browse(new URI(url));
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		}
+	}
+	
 	public static String getNativesPath()
 	{
 		switch (OS.getOS())

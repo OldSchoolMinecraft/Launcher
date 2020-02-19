@@ -1,10 +1,10 @@
 package me.moderator_man.osml.ui;
 
 import java.awt.Color;
-import java.awt.Desktop;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.net.URI;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
 import javax.imageio.ImageIO;
 import javax.swing.JButton;
@@ -20,6 +20,7 @@ import javax.swing.JTextField;
 import me.moderator_man.osml.Main;
 import me.moderator_man.osml.launch.Launcher;
 import me.moderator_man.osml.util.QueryAPI;
+import me.moderator_man.osml.util.Util;
 
 public class MainFrame
 {
@@ -152,6 +153,48 @@ public class MainFrame
 			txtPassword.setText(Main.config.password);
 		}
 		
+		websitePanel.addMouseListener(new MouseListener()
+		{
+			public void mouseClicked(MouseEvent e)
+			{
+				if (e.getButton() == MouseEvent.BUTTON1)
+					Util.openNetpage("https://www.oldschoolminecraft.com");
+			}
+
+			public void mousePressed(MouseEvent e) {}
+			public void mouseReleased(MouseEvent e) {}
+			public void mouseEntered(MouseEvent e) {}
+			public void mouseExited(MouseEvent e) {}
+		});
+		
+		discordPanel.addMouseListener(new MouseListener()
+		{
+			public void mouseClicked(MouseEvent e)
+			{
+				if (e.getButton() == MouseEvent.BUTTON1)
+					Util.openNetpage("https://www.oldschoolminecraft.com/discord");
+			}
+
+			public void mousePressed(MouseEvent e) {}
+			public void mouseReleased(MouseEvent e) {}
+			public void mouseEntered(MouseEvent e) {}
+			public void mouseExited(MouseEvent e) {}
+		});
+		
+		youtubePanel.addMouseListener(new MouseListener()
+		{
+			public void mouseClicked(MouseEvent e)
+			{
+				if (e.getButton() == MouseEvent.BUTTON1)
+					Util.openNetpage("https://www.youtube.com/channel/UCLL91k_YC7J9E_bey3IX3sw");
+			}
+
+			public void mousePressed(MouseEvent e) {}
+			public void mouseReleased(MouseEvent e) {}
+			public void mouseEntered(MouseEvent e) {}
+			public void mouseExited(MouseEvent e) {}
+		});
+		
 		btnLogin.addActionListener(new ActionListener()
 		{
 			public void actionPerformed(ActionEvent e)
@@ -173,16 +216,8 @@ public class MainFrame
 			int dialogResult = JOptionPane.showConfirmDialog(null, "An update is available! Would you like to download it?", "Update", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
 			if(dialogResult == JOptionPane.YES_OPTION)
 			{
-				if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE))
-				{
-				    try
-					{
-						Desktop.getDesktop().browse(new URI("https://www.oldschoolminecraft.com/launcher/new/Minecraft%20Launcher.jar"));
-						System.exit(0);
-					} catch (Exception ex) {
-						ex.printStackTrace();
-					}
-				}
+				Util.openNetpage("https://www.oldschoolminecraft.com/launcher/new/Minecraft%20Launcher.jar");
+				System.exit(0);
 			}
 		}
 	}
