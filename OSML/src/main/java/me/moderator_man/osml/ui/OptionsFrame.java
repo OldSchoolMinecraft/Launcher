@@ -1,4 +1,4 @@
-package me.moderator_man.osml;
+package me.moderator_man.osml.ui;
 
 import java.awt.Color;
 import java.awt.Desktop;
@@ -13,6 +13,8 @@ import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
+
+import me.moderator_man.osml.Main;
 
 public class OptionsFrame extends JDialog
 {
@@ -55,6 +57,7 @@ public class OptionsFrame extends JDialog
 			backgroundPanel.add(ramAllocation);
 			
 			JButton btnOpenChangelog = new JButton("Open Changelog");
+			btnOpenChangelog.setEnabled(false);
 			btnOpenChangelog.addActionListener(new ActionListener()
 			{
 				public void actionPerformed(ActionEvent e)
@@ -94,11 +97,11 @@ public class OptionsFrame extends JDialog
 			cbKeepOpen.setSelected(Main.config.keepOpen);
 			cbOpenOutput.setSelected(Main.config.openOutput);
 			
-			JCheckBox cbForceUpdate = new JCheckBox("Force update");
-			cbForceUpdate.setOpaque(false);
-			cbForceUpdate.setForeground(Color.WHITE);
-			cbForceUpdate.setBounds(164, 47, 121, 23);
-			backgroundPanel.add(cbForceUpdate);
+			JCheckBox cbDisableUpdate = new JCheckBox("Disable update");
+			cbDisableUpdate.setOpaque(false);
+			cbDisableUpdate.setForeground(Color.WHITE);
+			cbDisableUpdate.setBounds(164, 47, 121, 23);
+			backgroundPanel.add(cbDisableUpdate);
 			
 			// save button action
 			btnSaveClose.addActionListener(new ActionListener()
@@ -107,6 +110,7 @@ public class OptionsFrame extends JDialog
 				{
 					Main.config.keepOpen = cbKeepOpen.isSelected();
 					Main.config.openOutput = cbOpenOutput.isSelected();
+					Main.config.disableUpdate = cbDisableUpdate.isSelected();
 					Main.config.ramMb = (int)ramAllocation.getValue();
 					
 					Main.saveConfig();

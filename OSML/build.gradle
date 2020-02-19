@@ -1,13 +1,36 @@
 apply plugin: 'java'
 apply plugin: 'eclipse'
 
+version = '1.0'
+
 repositories
 {
     jcenter()
     mavenCentral()
 }
 
+configurations
+{
+    extraLibs
+}
+
 dependencies
 {
+	extraLibs group: 'org.json', name: 'json', version: '20190722'
 	compile group: 'org.json', name: 'json', version: '20190722'
+}
+
+jar
+{
+	from
+	{
+        configurations.extraLibs.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+	
+    manifest
+    {
+        attributes 'Implementation-Title': 'OSML',  
+        	'Implementation-Version': version,
+        	'Main-Class': 'me.moderator_man.osml.Main'
+    }
 }

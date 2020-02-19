@@ -1,6 +1,6 @@
 package me.moderator_man.osml.launch;
 
-import me.moderator_man.osml.Util;
+import me.moderator_man.osml.util.Util;
 
 public class BinEntry
 {

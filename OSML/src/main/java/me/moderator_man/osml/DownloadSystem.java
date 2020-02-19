@@ -6,54 +6,18 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import me.moderator_man.osml.util.Logger;
+import me.moderator_man.osml.util.OS;
+import me.moderator_man.osml.util.QueryAPI;
+import me.moderator_man.osml.util.StaticData;
+import me.moderator_man.osml.util.Util;
+
 public class DownloadSystem extends Thread
 {
-	private String[] natives_windows;
-	private String[] natives_mac;
-	private String[] natives_linux;
-	private String[] libraries;
 	private boolean complete;
 	
 	public DownloadSystem()
 	{
-		natives_windows = new String[]
-		{
-			"jinput-dx8.dll",
-			"jinput-dx8_64.dll",
-			"jinput-raw.dll",
-			"jinput-raw_64.dll",
-			"jinput-wintab.dll",
-			"lwjgl.dll",
-			"lwjgl64.dll",
-			"OpenAL32.dll",
-			"OpenAL64.dll"
-		};
-		
-		natives_mac = new String[]
-		{
-			"jinput.jnilib",
-			"lwjgl.jnilib",
-			"openal.dylib"
-		};
-		
-		natives_linux = new String[]
-		{
-			"jinput.so",
-			"jinput64.so",
-			"lwjgl.so",
-			"lwjgl64.so",
-			"openal.so",
-			"openal64.so"
-		};
-		
-		libraries = new String[]
-		{
-			"lwjgl.jar",
-			"jinput.jar",
-			"lwjgl_util.jar",
-			"json.jar"
-		};
-		
 		complete = false;
 	}
 	
@@ -70,89 +34,53 @@ public class DownloadSystem extends Thread
 		return complete;
 	}
 	
-	private String getNativesPath()
-	{
-		switch (OS.getOS())
-		{
-			default:
-				return System.getProperty("user.home") + "/AppData/Roaming/.osm/bin/natives/";
-			case Windows:
-				return System.getProperty("user.home") + "/AppData/Roaming/.osm/bin/natives/";
-			case Mac:
-				return String.format("~/Library/Application Support/osm/bin/natives/");
-			case Linux:
-				return "~/.osm/bin/natives/";
-		}
-	}
-	
-	private String getBinPath()
-	{
-		switch (OS.getOS())
-		{
-			default:
-				return System.getProperty("user.home") + "/AppData/Roaming/.osm/bin/";
-			case Windows:
-				return System.getProperty("user.home") + "/AppData/Roaming/.osm/bin/";
-			case Mac:
-				return String.format("~/Library/Application Support/osm/bin/");
-			case Linux:
-				return "~/.osm/bin/natives/";
-		}
-	}
-	
 	public void downloadNatives()
 	{
 		switch (OS.getOS())
 		{
 			default:
-				downloadList("https://www.oldschoolminecraft.com/launcher/natives/windows/", natives_windows, getNativesPath());
+				downloadList("https://www.oldschoolminecraft.com/launcher/natives/windows/", StaticData.natives_windows, Util.getNativesPath());
 				break;
 			case Windows:
-				downloadList("https://www.oldschoolminecraft.com/launcher/natives/windows/", natives_windows, getNativesPath());
+				downloadList("https://www.oldschoolminecraft.com/launcher/natives/windows/", StaticData.natives_windows, Util.getNativesPath());
 				break;
 			case Mac:
-				downloadList("https://www.oldschoolminecraft.com/launcher/natives/mac/", natives_mac, getNativesPath());
+				downloadList("https://www.oldschoolminecraft.com/launcher/natives/mac/", StaticData.natives_mac, Util.getNativesPath());
 				break;
 			case Linux:
-				downloadList("https://www.oldschoolminecraft.com/launcher/natives/linux/", natives_linux, getNativesPath());
+				downloadList("https://www.oldschoolminecraft.com/launcher/natives/linux/", StaticData.natives_linux, Util.getNativesPath());
 				break;
 		}
 	}
 	
 	public void downloadLibraries()
 	{
-		downloadList("https://www.oldschoolminecraft.com/launcher/libraries/", libraries, getBinPath());
+		downloadList("https://www.oldschoolminecraft.com/launcher/libraries/", StaticData.libraries, Util.getBinPath());
 	}
 	
 	public void downloadClient()
 	{
-		File file = new File(getBinPath() + "minecraft.jar");
-		
-		if (Main.config.forceUpdate)
+		try
 		{
-			if (file.exists())
-				file.delete();
-			downloadList("", new String[] { "minecraft.jar" }, getBinPath());
-		} else {
-			try
+			File file = new File(Util.getBinPath() + "minecraft.jar");
+			
+			if (Main.config.disableUpdate)
+				return;
+			
+			if (!file.exists())
 			{
+				downloadList("https://www.oldschoolminecraft.com/launcher/", new String[] { "minecraft.jar" }, Util.getBinPath());
+			} else {
+				String latestChecksum = QueryAPI.get("https://www.oldschoolminecraft.com/launcher/versioncheck.php");
+				String currentChecksum = Util.getMD5Checksum(Util.getBinPath() + "minecraft.jar");
 				
-				if (file.exists())
-				{
-					String current_hash = Util.getMD5Checksum(getBinPath() + "minecraft.jar");
-					String latest_hash = QueryAPI.get("https://www.oldschoolminecraft.com/versioncheck.php");
-					if (latest_hash != current_hash)
-					{
-						if (file.exists())
-							file.delete();
-						downloadList("https://www.oldschoolminecraft.com/launcher/", new String[] { "minecraft.jar" }, getBinPath());
-					}
-				} else {
-					downloadList("https://www.oldschoolminecraft.com/launcher/", new String[] { "minecraft.jar" }, getBinPath());
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
+				if (currentChecksum != latestChecksum)
+					downloadList("https://www.oldschoolminecraft.com/launcher/", new String[] { "minecraft.jar" }, Util.getBinPath());
+				else
+					Logger.log(String.format("No client update available (current=%s, latest=%s)", currentChecksum, latestChecksum));
 			}
+		} catch (Exception ex) {
+			ex.printStackTrace();
 		}
 	}
 	
@@ -160,6 +88,12 @@ public class DownloadSystem extends Thread
 	{
 		for (String item : list)
 		{
+			File file = new File(target_directory + item);
+			if (file.exists())
+			{
+				Logger.log(String.format("Skipping '%s': already exists", item));
+				continue;
+			}
 			downloadFile(base + item, target_directory + item);
 		}
 	}
@@ -196,9 +130,9 @@ public class DownloadSystem extends Thread
 	            outputStream.close();
 	            inputStream.close();
 	            
-	            System.out.println("File downloaded");
+	            Logger.log(String.format("Downloaded file '%s' to '%s'", url, path));
 	        } else {
-	            System.out.println("No file to download. Server replied HTTP code: " + responseCode);
+	        	Logger.log(String.format("Download failed ('%s'): HTTP code was '%s'", url, responseCode));
 	        }
 	        httpConn.disconnect();
 		} catch (Exception ex) {

@@ -8,6 +8,11 @@ import javax.swing.UIManager;
 
 import me.moderator_man.osml.io.FormatReader;
 import me.moderator_man.osml.io.FormatWriter;
+import me.moderator_man.osml.ui.MainFrame;
+import me.moderator_man.osml.util.Logger;
+import me.moderator_man.osml.util.OS;
+import me.moderator_man.osml.util.QueryAPI;
+import me.moderator_man.osml.util.Util;
 
 public class Main
 {
@@ -15,11 +20,6 @@ public class Main
 	
 	public static Configuration config;
 	public static boolean updateAvailable = false;
-	
-	private static void log(String str)
-	{
-		System.out.println(str);
-	}
 	
 	private static String getConfigPath()
 	{
@@ -47,17 +47,21 @@ public class Main
 	
 	public static void main(String[] args)
 	{
-		log("Started");
+		Logger.log("Started");
 		
 		try
 		{
 			String install_directory = Util.getInstallDirectory();
+			String logs_directory = Util.getInstallDirectory() + "logs/";
 			String bin_directory = Util.getInstallDirectory() + "bin/";
 			String natives_directory = bin_directory + "natives";
-			log("Install directory: " + install_directory);
+			Logger.log("Install directory: " + install_directory);
 			File inst_dir = new File(install_directory);
 			if (!inst_dir.exists())
 				inst_dir.mkdir();
+			File logs_dir = new File(logs_directory);
+			if (!logs_dir.exists())
+				logs_dir.mkdir();
 			File bin_dir = new File(bin_directory);
 			if (!bin_dir.exists())
 				bin_dir.mkdir();
@@ -65,20 +69,18 @@ public class Main
 			if (!natives_dir.exists())
 				natives_dir.mkdir();
 		} catch (Exception ex) {
-			log("Something went wrong while creating the install directory!");
+			Logger.log("Something went wrong while creating the install directory!");
 			System.exit(1);
 		}
 		
-		log("Config path: " + getConfigPath());
+		Logger.log("Config path: " + getConfigPath());
 		
 		try
 		{
 			int latestVersion = Integer.parseInt(QueryAPI.get("https://www.oldschoolminecraft.com/launcher/lv.php"));
 			
 			if (latestVersion > VERSION)
-			{
 				updateAvailable = true;
-			}
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
@@ -88,16 +90,16 @@ public class Main
 			config = new Configuration();
 			config.keepOpen = false;
 			config.openOutput = false;
-			config.forceUpdate = false;
+			config.disableUpdate = false;
 			config.rememberPassword = false;
 			config.ramMb = 1024;
 			FormatWriter<Configuration> writer = new FormatWriter<Configuration>();
 			writer.write(config, getConfigPath());
-			log("Config was missing, so a new one was created with default values.");
+			Logger.log("Config was missing, so a new one was created with default values.");
 		} else {
 			FormatReader<Configuration> reader = new FormatReader<Configuration>();
 			config = reader.read(getConfigPath());
-			log("Finished reading config, no problems.");
+			Logger.log("Finished reading config, no problems.");
 		}
 		
 		if (config.ramMb > 65536)

@@ -1,8 +1,10 @@
-package me.moderator_man.osml;
+package me.moderator_man.osml.ui;
 
 import java.awt.Color;
+import java.awt.Desktop;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.net.URI;
 
 import javax.imageio.ImageIO;
 import javax.swing.JButton;
@@ -10,11 +12,14 @@ import javax.swing.JCheckBox;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
+import me.moderator_man.osml.Main;
 import me.moderator_man.osml.launch.Launcher;
+import me.moderator_man.osml.util.QueryAPI;
 
 public class MainFrame
 {
@@ -42,7 +47,7 @@ public class MainFrame
 		frmOldSchoolMinecraft = new JFrame();
 		frmOldSchoolMinecraft.setTitle("Old School Minecraft Launcher");
 		frmOldSchoolMinecraft.setResizable(false);
-		frmOldSchoolMinecraft.setBounds(100, 100, 450, 240);
+		frmOldSchoolMinecraft.setBounds(100, 100, 468, 250);
 		frmOldSchoolMinecraft.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frmOldSchoolMinecraft.getContentPane().setLayout(null);
 		frmOldSchoolMinecraft.setLocationRelativeTo(null);
@@ -55,7 +60,7 @@ public class MainFrame
 		}
 		
 		TexturedPanel backgroundPanel = new TexturedPanel();
-		backgroundPanel.setBounds(0, 0, 444, 211);
+		backgroundPanel.setBounds(0, 0, 457, 221);
 		frmOldSchoolMinecraft.getContentPane().add(backgroundPanel);
 		backgroundPanel.setLayout(null);
 		
@@ -88,11 +93,11 @@ public class MainFrame
 				}
 			}
 		});
-		btnOptions.setBounds(365, 132, 69, 23);
+		btnOptions.setBounds(365, 132, 79, 23);
 		backgroundPanel.add(btnOptions);
 		
 		JButton btnLogin = new JButton("Login");
-		btnLogin.setBounds(365, 166, 69, 23);
+		btnLogin.setBounds(365, 166, 79, 23);
 		backgroundPanel.add(btnLogin);
 		
 		JLabel lblUsername = new JLabel("Username:");
@@ -123,7 +128,7 @@ public class MainFrame
 		JCheckBox cbRememberPassword = new JCheckBox("Remember password?");
 		cbRememberPassword.setForeground(Color.WHITE);
 		cbRememberPassword.setOpaque(false);
-		cbRememberPassword.setBounds(310, 188, 134, 23);
+		cbRememberPassword.setBounds(317, 188, 134, 23);
 		backgroundPanel.add(cbRememberPassword);
 		
 		JLabel lblUpdateRequired = new JLabel("There is a launcher update available!");
@@ -140,13 +145,56 @@ public class MainFrame
 		
 		frmOldSchoolMinecraft.setFocusTraversalPolicy(new SimpleFocusTraversalPolicy(txtUsername, txtPassword, btnLogin, btnOptions));
 		
+		if (Main.config.rememberPassword)
+		{
+			cbRememberPassword.setSelected(true);
+			txtUsername.setText(Main.config.username);
+			txtPassword.setText(Main.config.password);
+		}
+		
 		btnLogin.addActionListener(new ActionListener()
 		{
 			public void actionPerformed(ActionEvent e)
 			{
-				new Launcher().launch(new String[] { txtUsername.getText().trim(), QueryAPI.getNewSession(txtUsername.getText(), String.valueOf(txtPassword.getPassword())) });
+				if (cbRememberPassword.isSelected())
+				{
+					Main.config.rememberPassword = true;
+					Main.config.username = txtUsername.getText();
+					Main.config.password = String.valueOf(txtPassword.getPassword());
+					Main.saveConfig();
+				}
+				
+				new Launcher().launch(txtUsername.getText().trim(), QueryAPI.getNewSession(txtUsername.getText(), String.valueOf(txtPassword.getPassword())));
 			}
 		});
+		
+		if (Main.updateAvailable)
+		{
+			int dialogResult = JOptionPane.showConfirmDialog(null, "An update is available! Would you like to download it?", "Update", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+			if(dialogResult == JOptionPane.YES_OPTION)
+			{
+				if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE))
+				{
+				    try
+					{
+						Desktop.getDesktop().browse(new URI("https://www.oldschoolminecraft.com/launcher/new/Minecraft%20Launcher.jar"));
+						System.exit(0);
+					} catch (Exception ex) {
+						ex.printStackTrace();
+					}
+				}
+			}
+		}
+	}
+	
+	public void hide()
+	{
+		frmOldSchoolMinecraft.setVisible(false);
+	}
+	
+	public void show()
+	{
+		frmOldSchoolMinecraft.setVisible(true);
 	}
 	
 	public void setDownloadingMessage()

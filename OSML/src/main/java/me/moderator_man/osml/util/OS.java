@@ -1,4 +1,4 @@
-package me.moderator_man.osml;
+package me.moderator_man.osml.util;
 
 public enum OS
 {

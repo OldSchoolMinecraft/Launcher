@@ -8,7 +8,9 @@ public class Configuration implements Serializable
 	
 	public boolean keepOpen;
 	public boolean openOutput;
-	public boolean forceUpdate;
+	public boolean disableUpdate;
 	public boolean rememberPassword;
 	public int ramMb;
+	public String username;
+	public String password;
 }

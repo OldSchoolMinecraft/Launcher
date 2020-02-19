@@ -1,4 +1,4 @@
-package me.moderator_man.osml;
+package me.moderator_man.osml.ui;
 
 import java.awt.Color;
 import java.awt.GradientPaint;
