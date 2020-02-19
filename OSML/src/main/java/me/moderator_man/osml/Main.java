@@ -32,7 +32,7 @@ public class Main
 			case Mac:
 				return String.format("~/Library/Application Support/osm/launcher.cfg");
 			case Linux:
-				return "~/.osm/launcher.cfg";
+				return Util.getLinuxHomeDir() + "/.osm/launcher.cfg";
 		}
 	}
 	

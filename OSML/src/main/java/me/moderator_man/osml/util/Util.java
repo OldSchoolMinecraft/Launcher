@@ -38,16 +38,34 @@ public class Util
 			case Mac:
 				return String.format("~/Library/Application Support/osm/bin/natives/");
 			case Linux:
-				return "~/.osm/bin/natives/";
+				return getLinuxHomeDir() + "/.osm/bin/natives/";
 			case Unsupported:
 				System.out.println("Unsupported operating system (assuming Linux).");
-				return "~/.osm/bin/natives/";
+				return getLinuxHomeDir() + "/.osm/bin/natives/";
 		}
 	}
 	
 	private static String backslashes(String input)
 	{
 		return input.replaceAll("/", "\\\\");
+	}
+
+	public static String getLinuxHomeDir()
+	{
+		// $HOME environment variable should exist, but handle the situation when
+		// it doesn't exist and/or the user executes program as root.
+		String linux_home = System.getenv("HOME");
+		if (linux_home == null)
+		{
+			String linux_user = System.getenv("USER");
+			if (linux_user == "root")
+				return "/root";
+			else
+				return "/home/" + linux_user;
+		}
+		else
+			return linux_home;
+
 	}
 	
 	public static String getBinPath()
@@ -62,10 +80,10 @@ public class Util
 			case Mac:
 				return String.format("~/Library/Application Support/osm/bin/");
 			case Linux:
-				return "~/.osm/bin/";
+				return getLinuxHomeDir() + "/.osm/bin/";
 			case Unsupported:
 				System.out.println("Unsupported operating system (assuming Linux).");
-				return "~/.osm/bin/";
+				return getLinuxHomeDir() + "/.osm/bin/";
 		}
 	}
 	
@@ -81,10 +99,10 @@ public class Util
 			case Mac:
 				return String.format("~/Library/Application Support/osm/");
 			case Linux:
-				return "~/.osm/";
+				return getLinuxHomeDir() + "/.osm/";
 			case Unsupported:
 				System.out.println("Unsupported operating system (assuming Linux).");
-				return "~/.osm/";
+				return getLinuxHomeDir() + "/.osm/";
 		}
 	}
 	
