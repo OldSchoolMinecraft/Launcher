@@ -55,8 +55,8 @@ public class Main
 			if (OS.getOS() == OS.Linux) Util.findLinuxHomeDirectory();
 
 			String install_directory = Util.getInstallDirectory();
-			String logs_directory = Util.getInstallDirectory() + "logs/";
-			String bin_directory = Util.getInstallDirectory() + "bin/";
+			String logs_directory = install_directory + "logs/";
+			String bin_directory = install_directory + "bin/";
 			String natives_directory = bin_directory + "natives";
 			Logger.log("Install directory: " + install_directory);
 			File inst_dir = new File(install_directory);
