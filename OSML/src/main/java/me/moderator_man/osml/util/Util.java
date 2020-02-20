@@ -10,6 +10,27 @@ import java.util.Date;
 
 public class Util
 {
+
+	public static String linuxHomeDir;
+
+	public static void findLinuxHomeDirectory()
+	{
+		// $HOME environment variable should exist, but handle the situation when
+		// it doesn't exist and/or the user executes program as root.
+		String linux_home = System.getenv("HOME");
+		if (linux_home == null)
+		{
+			String linux_user = System.getenv("USER");
+			if (linux_user == "root")
+				linuxHomeDir = "/root";
+			else
+				linuxHomeDir =  "/home/" + linux_user;
+		}
+		else
+			linuxHomeDir = linux_home;
+
+	}
+
 	/*
 	 * Thank you JuliusVan for the most retarded term known to man (netpage).
 	 */
@@ -38,10 +59,10 @@ public class Util
 			case Mac:
 				return String.format("~/Library/Application Support/osm/bin/natives/");
 			case Linux:
-				return "~/.osm/bin/natives/";
+				return linuxHomeDir + "/.osm/bin/natives/";
 			case Unsupported:
 				System.out.println("Unsupported operating system (assuming Linux).");
-				return "~/.osm/bin/natives/";
+				return linuxHomeDir + "/.osm/bin/natives/";
 		}
 	}
 	
@@ -62,10 +83,10 @@ public class Util
 			case Mac:
 				return String.format("~/Library/Application Support/osm/bin/");
 			case Linux:
-				return "~/.osm/bin/";
+				return linuxHomeDir + "/.osm/bin/";
 			case Unsupported:
 				System.out.println("Unsupported operating system (assuming Linux).");
-				return "~/.osm/bin/";
+				return linuxHomeDir + "/.osm/bin/";
 		}
 	}
 	
@@ -81,10 +102,10 @@ public class Util
 			case Mac:
 				return String.format("~/Library/Application Support/osm/");
 			case Linux:
-				return "~/.osm/";
+				return linuxHomeDir + "/.osm/";
 			case Unsupported:
 				System.out.println("Unsupported operating system (assuming Linux).");
-				return "~/.osm/";
+				return linuxHomeDir + "/.osm/";
 		}
 	}
 	

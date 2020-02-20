@@ -32,7 +32,7 @@ public class Main
 			case Mac:
 				return String.format("~/Library/Application Support/osm/launcher.cfg");
 			case Linux:
-				return "~/.osm/launcher.cfg";
+				return Util.linuxHomeDir + "/.osm/launcher.cfg";
 		}
 	}
 	
@@ -51,6 +51,9 @@ public class Main
 		
 		try
 		{
+			// Find user's home directory if running from an Linux OS
+			if (OS.getOS() == OS.Linux) Util.findLinuxHomeDirectory();
+
 			String install_directory = Util.getInstallDirectory();
 			String logs_directory = Util.getInstallDirectory() + "logs/";
 			String bin_directory = Util.getInstallDirectory() + "bin/";
