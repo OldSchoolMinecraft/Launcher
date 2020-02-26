@@ -75,8 +75,10 @@ public class DownloadSystem extends Thread
 				String currentChecksum = Util.getMD5Checksum(Util.getBinPath() + "minecraft.jar");
 				
 				if (currentChecksum != latestChecksum)
+				{
+					file.delete();
 					downloadList("https://www.oldschoolminecraft.com/launcher/", new String[] { "minecraft.jar" }, Util.getBinPath());
-				else
+				} else
 					Logger.log(String.format("No client update available (current=%s, latest=%s)", currentChecksum, latestChecksum));
 			}
 		} catch (Exception ex) {
