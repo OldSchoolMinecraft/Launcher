@@ -18,8 +18,8 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
 import me.moderator_man.osml.Main;
+import me.moderator_man.osml.auth.Authenticator;
 import me.moderator_man.osml.launch.Launcher;
-import me.moderator_man.osml.util.QueryAPI;
 import me.moderator_man.osml.util.Util;
 
 public class MainFrame
@@ -135,8 +135,6 @@ public class MainFrame
 		JLabel lblUpdateRequired = new JLabel("There is a launcher update available!");
 		lblUpdateRequired.setForeground(Color.GREEN);
 		lblUpdateRequired.setBounds(257, 11, 177, 14);
-		if (Main.updateAvailable)
-			backgroundPanel.add(lblUpdateRequired);
 		
 		JLabel lblDownloading = new JLabel("Downloading...");
 		lblDownloading.setVisible(false);
@@ -212,7 +210,22 @@ public class MainFrame
 				
 				Main.saveConfig();
 				
-				new Launcher().launch(txtUsername.getText().trim(), QueryAPI.getNewSession(txtUsername.getText(), String.valueOf(txtPassword.getPassword())));
+				Authenticator auth = new Authenticator();
+				String username = txtUsername.getText().trim();
+				auth.tryAuth(username, String.valueOf(txtPassword.getPassword()));
+				
+				if (auth.isAuthenticated())
+				{
+					txtUsername.setEnabled(false);
+					txtPassword.setEnabled(false);
+					btnOptions.setEnabled(false);
+					btnLogin.setEnabled(false);
+					cbRememberPassword.setEnabled(false);
+					refresh(backgroundPanel);
+					new Launcher().launch(username, auth.getSessionID());
+				} else {
+					JOptionPane.showConfirmDialog(null, "Invalid username or password!", "Invalid credentials", JOptionPane.DEFAULT_OPTION, JOptionPane.ERROR_MESSAGE);
+				}
 			}
 		});
 		
@@ -224,17 +237,26 @@ public class MainFrame
 				Util.openNetpage("https://www.oldschoolminecraft.com/launcher/new/Minecraft%20Launcher.jar");
 				System.exit(0);
 			}
+			backgroundPanel.add(lblUpdateRequired);
 		}
+	}
+	
+	private void refresh(JPanel panel)
+	{
+		panel.revalidate();
+		panel.repaint();
 	}
 	
 	public void hide()
 	{
 		frmOldSchoolMinecraft.setVisible(false);
+		refresh((JPanel) frmOldSchoolMinecraft.getContentPane());
 	}
 	
 	public void show()
 	{
 		frmOldSchoolMinecraft.setVisible(true);
+		refresh((JPanel) frmOldSchoolMinecraft.getContentPane());
 	}
 	
 	public void setDownloadingMessage()
@@ -244,6 +266,7 @@ public class MainFrame
 		JLabel dl = (JLabel) bgp.getComponent(Main.updateAvailable ? 12 : 11);
 		dl.setText("Downloading...");
 		dl.setVisible(true);
+		refresh(bgp);
 	}
 	
 	public void setLaunchingMessage()
@@ -254,5 +277,6 @@ public class MainFrame
 		
 		dl.setText("Launching...");
 		dl.setVisible(true);
+		refresh(bgp);
 	}
 }
