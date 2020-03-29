@@ -35,7 +35,7 @@ public class OptionsFrame extends JDialog
 		}
 		
 		setTitle("Options");
-		setType(Type.POPUP);
+		setType(Type.NORMAL);
 		setResizable(false);
 		setBounds(100, 100, 301, 160);
 		setLocationRelativeTo(null);
@@ -94,16 +94,20 @@ public class OptionsFrame extends JDialog
 			cbOpenOutput.setBounds(164, 27, 121, 23);
 			backgroundPanel.add(cbOpenOutput);
 			
-			// set all the values from the config
-			ramAllocation.setValue(Main.config.ramMb);
-			cbKeepOpen.setSelected(Main.config.keepOpen);
-			cbOpenOutput.setSelected(Main.config.openOutput);
-			
 			JCheckBox cbDisableUpdate = new JCheckBox("Disable update");
 			cbDisableUpdate.setOpaque(false);
 			cbDisableUpdate.setForeground(Color.WHITE);
 			cbDisableUpdate.setBounds(164, 47, 121, 23);
 			backgroundPanel.add(cbDisableUpdate);
+			
+			// update layout to prevent bugs
+			update(getGraphics());
+			
+			// set all the values from the config
+			ramAllocation.setValue(Main.config.ramMb);
+			cbKeepOpen.setSelected(Main.config.keepOpen);
+			cbOpenOutput.setSelected(Main.config.openOutput);
+			cbDisableUpdate.setSelected(Main.config.disableUpdate);
 			
 			// save button action
 			btnSaveClose.addActionListener(new ActionListener()

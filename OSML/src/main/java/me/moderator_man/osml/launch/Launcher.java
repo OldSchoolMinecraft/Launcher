@@ -1,5 +1,7 @@
 package me.moderator_man.osml.launch;
 
+import java.io.File;
+
 import me.moderator_man.osml.DownloadSystem;
 import me.moderator_man.osml.Main;
 import me.moderator_man.osml.ui.MainFrame;
@@ -27,9 +29,7 @@ public class Launcher
 					
 					StringBuilder libsb = new StringBuilder();
 					for (String library : StaticData.libraries)
-					{
-						libsb.append(os_library(library) + ";");
-					}
+						libsb.append(os_library(library) + File.pathSeparator);
 					libsb.append(os_library("minecraft.jar"));
 					String libs = libsb.toString();
 					
