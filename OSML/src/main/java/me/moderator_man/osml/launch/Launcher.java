@@ -33,7 +33,7 @@ public class Launcher
 					libsb.append(os_library("minecraft.jar"));
 					String libs = libsb.toString();
 					
-					ProcessBuilder pb = new ProcessBuilder("java", "-Xmx" + Main.config.ramMb + "M", "-Djava.library.path=" + Util.getNativesPath(), "-cp", libs, "net.minecraft.client.Minecraft", username, sessionId);
+					ProcessBuilder pb = new ProcessBuilder("java", "-Xmx" + Main.config.ramMb + "M", "-Djava.library.path=" + Util.getNativesPath(), "-cp", libs, "net.minecraft.client.Minecraft", username, sessionId, "--enable-auth");
 					GameLogThread glThread = new GameLogThread(pb.start());
 					glThread.start();
 				} catch (Exception ex) {
