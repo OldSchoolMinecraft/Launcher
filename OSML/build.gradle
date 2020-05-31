@@ -5,6 +5,10 @@ version = '1.0'
 
 repositories
 {
+	maven
+	{
+        url "https://libraries.minecraft.net/"
+    }
     jcenter()
     mavenCentral()
 }
@@ -18,6 +22,9 @@ dependencies
 {
 	extraLibs group: 'org.json', name: 'json', version: '20190722'
 	compile group: 'org.json', name: 'json', version: '20190722'
+	
+	extraLibs group: 'net.minecraft', name: 'launchwrapper', version: '1.5'
+	compile group: 'net.minecraft', name: 'launchwrapper', version: '1.5'
 }
 
 jar

@@ -13,7 +13,7 @@ public enum OS
 		
 		if (flag.contains("win"))
 			return OS.Windows;
-		if (flag.contains("osx"))
+		if (flag.contains("osx") || flag.contains("mac"))
 			return OS.Mac;
 		if (flag.contains("nix") || flag.contains("nux")) // os.name on Linux is basically "Linux", but
 			return OS.Linux;                          // but I'll the unix part stay just to be sure

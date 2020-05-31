@@ -71,15 +71,15 @@ public class MainFrame
 		backgroundPanel.add(logoPanel);
 		
 		txtUsername = new JTextField();
-		txtUsername.setBounds(269, 133, 86, 20);
+		txtUsername.setBounds(269, 140, 92, 20);
 		backgroundPanel.add(txtUsername);
 		txtUsername.setColumns(10);
 		
 		txtPassword = new JPasswordField();
-		txtPassword.setBounds(269, 167, 86, 20);
+		txtPassword.setBounds(269, 165, 92, 20);
 		backgroundPanel.add(txtPassword);
 		
-		JButton btnOptions = new JButton("Options");
+		TransparentButton btnOptions = new TransparentButton("Options");
 		btnOptions.addActionListener(new ActionListener()
 		{
 			public void actionPerformed(ActionEvent e)
@@ -94,21 +94,21 @@ public class MainFrame
 				}
 			}
 		});
-		btnOptions.setBounds(365, 132, 79, 23);
+		btnOptions.setBounds(365, 139, 79, 23);
 		backgroundPanel.add(btnOptions);
 		
-		JButton btnLogin = new JButton("Login");
-		btnLogin.setBounds(365, 166, 79, 23);
+		TransparentButton btnLogin = new TransparentButton("Login");
+		btnLogin.setBounds(365, 164, 79, 23);
 		backgroundPanel.add(btnLogin);
 		
 		JLabel lblUsername = new JLabel("Username:");
 		lblUsername.setForeground(Color.WHITE);
-		lblUsername.setBounds(211, 136, 58, 14);
+		lblUsername.setBounds(211, 143, 58, 14);
 		backgroundPanel.add(lblUsername);
 		
 		JLabel lblPassword = new JLabel("Password:");
 		lblPassword.setForeground(Color.WHITE);
-		lblPassword.setBounds(211, 170, 58, 14);
+		lblPassword.setBounds(213, 168, 58, 14);
 		backgroundPanel.add(lblPassword);
 		
 		ImagePanel websitePanel = new ImagePanel("/favicon.png");

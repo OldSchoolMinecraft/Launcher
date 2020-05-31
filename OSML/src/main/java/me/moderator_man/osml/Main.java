@@ -4,6 +4,7 @@ import java.awt.EventQueue;
 import java.io.File;
 
 import javax.imageio.ImageIO;
+import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 
 import me.moderator_man.osml.io.FormatReader;
@@ -16,7 +17,7 @@ import me.moderator_man.osml.util.Util;
 
 public class Main
 {
-	private static final int VERSION = 3;
+	public static final int VERSION = 5;
 	
 	public static Configuration config;
 	public static boolean updateAvailable = false;
@@ -88,27 +89,34 @@ public class Main
 			ex.printStackTrace();
 		}
 		
-		if (!new File(getConfigPath()).exists())
+		try
 		{
-			config = new Configuration();
-			config.keepOpen = false;
-			config.openOutput = false;
-			config.disableUpdate = false;
-			config.rememberPassword = false;
-			config.ramMb = 1024;
-			FormatWriter<Configuration> writer = new FormatWriter<Configuration>();
-			writer.write(config, getConfigPath());
-			Logger.log("Config was missing, so a new one was created with default values.");
-		} else {
-			FormatReader<Configuration> reader = new FormatReader<Configuration>();
-			config = reader.read(getConfigPath());
-			Logger.log("Finished reading config, no problems.");
+		    if (!fileExists(getConfigPath()))
+	        {
+	            config = getDefaultConfig();
+	            FormatWriter<Configuration> writer = new FormatWriter<Configuration>();
+	            writer.write(config, getConfigPath());
+	            Logger.log("Config was missing, so a new one was created with default values.");
+	        } else {
+	            FormatReader<Configuration> reader = new FormatReader<Configuration>();
+	            config = reader.read(getConfigPath());
+	            Logger.log("Finished reading config, no problems.");
+	            
+	            Logger.log("Config/disableUpdate: " + config.disableUpdate);
+	            Logger.log("Config/rememberPassword: " + config.rememberPassword);
+	            Logger.log("Config/legacyUI: " + config.legacyUI);
+	        }
+		} catch (Exception ex) {
+		    deleteFile(getConfigPath());
+		    config = getDefaultConfig();
 		}
 		
-		if (config.ramMb > 65536)
-			config.ramMb = 65536;
-		if (config.ramMb < 1024)
-			config.ramMb = 1024;
+		try
+		{
+		    UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+		} catch (Exception ex) {
+		    ex.printStackTrace();
+		}
 		
 		EventQueue.invokeLater(new Runnable()
 		{
@@ -116,7 +124,7 @@ public class Main
 			{
 				try
 				{
-					UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+					
 					MainFrame window = new MainFrame();
 					window.frmOldSchoolMinecraft.setVisible(true);
 					window.frmOldSchoolMinecraft.setIconImage(ImageIO.read(getClass().getResourceAsStream("/favicon.png")));
@@ -125,5 +133,36 @@ public class Main
 				}
 			}
 		});
+	}
+	
+	public static Configuration getDefaultConfig()
+	{
+	    Configuration config = new Configuration();
+        config.disableUpdate = false;
+        config.rememberPassword = false;
+        config.legacyUI = false;
+        config.ramMb = 1024;
+        return config;
+	}
+	
+	public static boolean fileExists(String path)
+	{
+		return new File(path).exists();
+	}
+	
+	public static boolean deleteFile(String path)
+	{
+		return new File(path).delete();
+	}
+	
+	public static boolean createFile(String path)
+	{
+		try
+		{
+			return new File(path).createNewFile();
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
 	}
 }

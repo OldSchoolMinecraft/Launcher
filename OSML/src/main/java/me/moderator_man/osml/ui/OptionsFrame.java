@@ -11,6 +11,7 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 
@@ -56,48 +57,14 @@ public class OptionsFrame extends JDialog
 			ramAllocation.setBounds(10, 28, 55, 20);
 			backgroundPanel.add(ramAllocation);
 			
-			JButton btnOpenChangelog = new JButton("Open Changelog");
-			btnOpenChangelog.setEnabled(false);
-			btnOpenChangelog.addActionListener(new ActionListener()
-			{
-				public void actionPerformed(ActionEvent e)
-				{
-					if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE))
-					{
-					    try
-						{
-							Desktop.getDesktop().browse(new URI("https://www.oldschoolminecraft.com/changelog"));
-						} catch (Exception ex) {
-							ex.printStackTrace();
-						}
-					}
-				}
-			});
-			btnOpenChangelog.setBounds(10, 97, 113, 23);
-			backgroundPanel.add(btnOpenChangelog);
-			
-			JButton btnSaveClose = new JButton("Save & Close");
+			TransparentButton btnSaveClose = new TransparentButton("Save & Close");
 			btnSaveClose.setBounds(190, 97, 95, 23);
 			backgroundPanel.add(btnSaveClose);
-			
-			JCheckBox cbKeepOpen = new JCheckBox("Keep launcher open");
-			cbKeepOpen.setEnabled(false);
-			cbKeepOpen.setForeground(Color.WHITE);
-			cbKeepOpen.setOpaque(false);
-			cbKeepOpen.setBounds(164, 7, 121, 23);
-			backgroundPanel.add(cbKeepOpen);
-			
-			JCheckBox cbOpenOutput = new JCheckBox("Open output log");
-			cbOpenOutput.setEnabled(false);
-			cbOpenOutput.setForeground(Color.WHITE);
-			cbOpenOutput.setOpaque(false);
-			cbOpenOutput.setBounds(164, 27, 121, 23);
-			backgroundPanel.add(cbOpenOutput);
 			
 			JCheckBox cbDisableUpdate = new JCheckBox("Disable update");
 			cbDisableUpdate.setOpaque(false);
 			cbDisableUpdate.setForeground(Color.WHITE);
-			cbDisableUpdate.setBounds(164, 47, 121, 23);
+			cbDisableUpdate.setBounds(10, 97, 113, 23);
 			backgroundPanel.add(cbDisableUpdate);
 			
 			// update layout to prevent bugs
@@ -105,25 +72,53 @@ public class OptionsFrame extends JDialog
 			
 			// set all the values from the config
 			ramAllocation.setValue(Main.config.ramMb);
-			cbKeepOpen.setSelected(Main.config.keepOpen);
-			cbOpenOutput.setSelected(Main.config.openOutput);
 			cbDisableUpdate.setSelected(Main.config.disableUpdate);
+			
+			JCheckBox cbLegacyUI = new JCheckBox("Legacy UI");
+			cbLegacyUI.setOpaque(false);
+			cbLegacyUI.setForeground(Color.WHITE);
+			cbLegacyUI.setBounds(10, 77, 111, 23);
+			backgroundPanel.add(cbLegacyUI);
 			
 			// save button action
 			btnSaveClose.addActionListener(new ActionListener()
 			{
 				public void actionPerformed(ActionEvent e)
 				{
-					Main.config.keepOpen = cbKeepOpen.isSelected();
-					Main.config.openOutput = cbOpenOutput.isSelected();
+					if (cbLegacyUI.isSelected())
+					{
+					    int n = JOptionPane.showConfirmDialog(
+					            null,
+					            "A restart is required to enable the legacy UI, would you like to continue?",
+					            "Wait!",
+					            JOptionPane.YES_NO_OPTION);
+					    if (n == JOptionPane.YES_OPTION)
+					    {
+					        Main.config.disableUpdate = cbDisableUpdate.isSelected();
+					        Main.config.legacyUI = cbLegacyUI.isSelected();
+					        Main.config.ramMb = (int) ramAllocation.getValue();
+					        
+					        saveAndClose();
+					        System.exit(0);
+					        return;
+					    } else {
+					        cbLegacyUI.setSelected(false);
+					    }
+					}
+					
 					Main.config.disableUpdate = cbDisableUpdate.isSelected();
-					Main.config.ramMb = (int)ramAllocation.getValue();
-					
-					Main.saveConfig();
-					
-					dispose();
+                    Main.config.legacyUI = cbLegacyUI.isSelected();
+                    Main.config.ramMb = (int)ramAllocation.getValue();
+                    
+                    saveAndClose();
 				}
 			});
 		}
+	}
+	
+	private void saveAndClose()
+	{
+	    Main.saveConfig();
+	    dispose();
 	}
 }

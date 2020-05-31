@@ -6,10 +6,9 @@ public class Configuration implements Serializable
 {
 	private static final long serialVersionUID = 1L;
 	
-	public boolean keepOpen;
-	public boolean openOutput;
 	public boolean disableUpdate;
 	public boolean rememberPassword;
+	public boolean legacyUI;
 	public int ramMb;
 	public String username;
 	public String password;

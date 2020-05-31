@@ -90,6 +90,8 @@ public class DownloadSystem extends Thread
 	{
 		for (String item : list)
 		{
+			item = item.trim();
+			
 			File file = new File(target_directory + item);
 			if (file.exists())
 			{
