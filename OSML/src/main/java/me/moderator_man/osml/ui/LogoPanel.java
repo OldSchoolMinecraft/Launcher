@@ -28,6 +28,22 @@ public class LogoPanel extends JPanel
 			e.printStackTrace();
 		}
 	}
+	
+	public LogoPanel(String name)
+    {
+        setOpaque(true);
+        try
+        {
+            BufferedImage src = ImageIO.read(getClass().getClassLoader().getResource(name));
+            int w = src.getWidth();
+            int h = src.getHeight();
+            this.bgImage = src.getScaledInstance(256, 49, 16);
+            setPreferredSize(new Dimension(246 + 32, 49 + 32));
+        } catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+    }
 
 	public void update(Graphics g)
 	{

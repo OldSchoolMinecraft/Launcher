@@ -20,12 +20,16 @@ import me.moderator_man.osml.Main;
 public class OptionsFrame extends JDialog
 {
 	private static final long serialVersionUID = 1L;
-
+	
+	private boolean legacyOnCreated;
+	
 	/**
 	 * Create the dialog.
 	 */
 	public OptionsFrame()
 	{
+	    legacyOnCreated = Main.config.legacyUI;
+	    
 		setModalityType(ModalityType.APPLICATION_MODAL);
 		
 		try
@@ -70,26 +74,27 @@ public class OptionsFrame extends JDialog
 			// update layout to prevent bugs
 			update(getGraphics());
 			
-			// set all the values from the config
-			ramAllocation.setValue(Main.config.ramMb);
-			cbDisableUpdate.setSelected(Main.config.disableUpdate);
-			
 			JCheckBox cbLegacyUI = new JCheckBox("Legacy UI");
 			cbLegacyUI.setOpaque(false);
 			cbLegacyUI.setForeground(Color.WHITE);
 			cbLegacyUI.setBounds(10, 77, 111, 23);
 			backgroundPanel.add(cbLegacyUI);
 			
+			// set all the values from the config
+            ramAllocation.setValue(Main.config.ramMb);
+            cbDisableUpdate.setSelected(Main.config.disableUpdate);
+            cbLegacyUI.setSelected(Main.config.legacyUI);
+			
 			// save button action
 			btnSaveClose.addActionListener(new ActionListener()
 			{
 				public void actionPerformed(ActionEvent e)
 				{
-					if (cbLegacyUI.isSelected())
+					if (cbLegacyUI.isSelected() != legacyOnCreated)
 					{
 					    int n = JOptionPane.showConfirmDialog(
 					            null,
-					            "A restart is required to enable the legacy UI, would you like to continue?",
+					            "A restart is required to change this option! Would you like to continue?\nYou will have to start the launcher again manually.",
 					            "Wait!",
 					            JOptionPane.YES_NO_OPTION);
 					    if (n == JOptionPane.YES_OPTION)

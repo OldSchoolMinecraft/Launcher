@@ -4,12 +4,12 @@ import java.awt.EventQueue;
 import java.io.File;
 
 import javax.imageio.ImageIO;
-import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 
 import me.moderator_man.osml.io.FormatReader;
 import me.moderator_man.osml.io.FormatWriter;
 import me.moderator_man.osml.ui.MainFrame;
+import me.moderator_man.osml.ui.legacy.LauncherFrame;
 import me.moderator_man.osml.util.Logger;
 import me.moderator_man.osml.util.OS;
 import me.moderator_man.osml.util.QueryAPI;
@@ -125,9 +125,16 @@ public class Main
 				try
 				{
 					
-					MainFrame window = new MainFrame();
-					window.frmOldSchoolMinecraft.setVisible(true);
-					window.frmOldSchoolMinecraft.setIconImage(ImageIO.read(getClass().getResourceAsStream("/favicon.png")));
+					
+					if (config.legacyUI)
+					{
+					    LauncherFrame window = new LauncherFrame();
+					    window.setVisible(true);
+					} else {
+					    MainFrame window = new MainFrame();
+					    window.frmOldSchoolMinecraft.setVisible(true);
+	                    window.frmOldSchoolMinecraft.setIconImage(ImageIO.read(getClass().getResourceAsStream("/favicon.png")));
+					}
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
