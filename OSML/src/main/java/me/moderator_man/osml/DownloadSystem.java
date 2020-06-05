@@ -81,7 +81,6 @@ public class DownloadSystem extends Thread
 					downloadFile("https://www.oldschoolminecraft.com/launcher/download.php?username=" + username, Util.getBinPath() + "minecraft.jar");
 				else
 					downloadFile("https://www.oldschoolminecraft.com/launcher/download.php", Util.getBinPath() + "minecraft.jar");
-				//downloadList("https://www.oldschoolminecraft.com/launcher/", new String[] { "minecraft.jar" }, Util.getBinPath());
 			} else {
 				String latestChecksum = "";
 				
@@ -89,7 +88,6 @@ public class DownloadSystem extends Thread
 					latestChecksum = QueryAPI.get("https://www.oldschoolminecraft.com/launcher/versioncheck.php?username=" + username);
 				else
 					latestChecksum = QueryAPI.get("https://www.oldschoolminecraft.com/launcher/versioncheck.php");
-				//String latestChecksum = QueryAPI.get("https://www.oldschoolminecraft.com/launcher/versioncheck.php");
 				String currentChecksum = Util.getMD5Checksum(Util.getBinPath() + "minecraft.jar");
 				
 				if (!currentChecksum.equals(latestChecksum))

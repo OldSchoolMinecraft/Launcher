@@ -16,6 +16,7 @@ public class Launcher
         StringBuilder libsb = new StringBuilder();
         for (int i = 0; i < StaticData.libraries.length; i++)
             libsb.append(os_library(StaticData.libraries[i]) + File.pathSeparator);
+        libsb.append(os_library("minecraft.jar"));
         String libs = libsb.toString();
         
         String java_path = "javaw";
@@ -29,17 +30,17 @@ public class Launcher
         params.add("-Dsun.java2d.opengl=false");
         params.add("-Dsun.java2d.pmoffscreen=false");
         params.add("-Djava.library.path=" + Util.getNativesPath());
-        params.add("-cp");
+        params.add("-classpath");
         params.add(libs);
         params.add("net.minecraft.client.Minecraft");
         params.add(username);
         params.add(sessionId);
         params.add("--enable-auth");
         
-        launch(username, sessionId, params, true);
+        launch(username, params, true);
     }
     
-    public void launch(String username, String sessionId, ArrayList<String> parameters, boolean legacy)
+    public void launch(String username, ArrayList<String> parameters, boolean legacy)
     {
         new Thread(new Runnable()
         {
@@ -75,6 +76,7 @@ public class Launcher
 	    StringBuilder libsb = new StringBuilder();
         for (int i = 0; i < StaticData.libraries.length; i++)
             libsb.append(os_library(StaticData.libraries[i]) + File.pathSeparator);
+        libsb.append(os_library("minecraft.jar"));
         String libs = libsb.toString();
         
         String java_path = "javaw";
@@ -88,14 +90,14 @@ public class Launcher
         params.add("-Dsun.java2d.opengl=false");
         params.add("-Dsun.java2d.pmoffscreen=false");
         params.add("-Djava.library.path=" + Util.getNativesPath());
-        params.add("-cp");
+        params.add("-classpath");
         params.add(libs);
         params.add("net.minecraft.client.Minecraft");
         params.add(username);
         params.add(sessionId);
         params.add("--enable-auth");
         
-        launch(username, sessionId, params, false);
+        launch(username, params, false);
 	}
 	
 	private String os_library(String name)
