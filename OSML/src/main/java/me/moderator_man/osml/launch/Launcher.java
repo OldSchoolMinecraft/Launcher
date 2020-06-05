@@ -49,7 +49,7 @@ public class Launcher
                 {
                     if (!legacy)
                         MainFrame.mainFrame.setDownloadingMessage();
-                    DownloadSystem dlsys = new DownloadSystem();
+                    DownloadSystem dlsys = new DownloadSystem(username);
                     dlsys.start();
                     while (!dlsys.isComplete())
                         Thread.sleep(500);

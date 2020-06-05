@@ -42,6 +42,6 @@ public class StaticData
 		"lwjgl.jar",
 		"lwjgl_util.jar",
 		"json.jar",
-		"minecraft.jar"
+		//"minecraft.jar"
 	};
 }

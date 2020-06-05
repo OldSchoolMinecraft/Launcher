@@ -124,6 +124,16 @@ public class LoginForm extends TransparentPanel
             {
                 try
                 {
+                	if (rememberBox.isSelected())
+    				{
+    					Main.config.rememberPassword = true;
+    					Main.config.username = userName.getText();
+    					Main.config.password = String.valueOf(password.getPassword());
+    				} else {
+    					Main.config.rememberPassword = false;
+    					Main.config.username = "If you are seeing this, hello!";
+    					Main.config.password = "Would you like me to tell you about our lord and savior Jesus Christ?";
+    				}
                     LoginForm.this.launcherFrame.login(LoginForm.this.userName.getText(), String.valueOf(LoginForm.this.password.getPassword()));
                 } catch (Exception e)
                 {

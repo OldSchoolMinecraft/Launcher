@@ -14,6 +14,7 @@ import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 import javax.swing.UIManager;
 
+import me.moderator_man.osml.Main;
 import me.moderator_man.osml.auth.Authenticator;
 import me.moderator_man.osml.launch.Launcher;
 
@@ -77,23 +78,16 @@ public class LauncherFrame extends Frame
 	{
 		try
 		{
-		    System.out.println("login 1");
 			Authenticator auth = new Authenticator();
-			System.out.println("login 2");
 			auth.tryAuth(username, password);
-			System.out.println("login 3");
 			if (auth.isAuthenticated())
 			{
-			    System.out.println("login authed");
 			    new Launcher().legacyLaunch(username, auth.getSessionID());
 			    setVisible(false);
-			    System.out.println("login launched");
 			} else {
-			    System.out.println("login no authed");
 			    showError("Invalid username or password!");
 			}
 		} catch (Exception e) {
-		    System.out.println("login error");
 			e.printStackTrace();
 			showError(e.toString());
 			this.loginForm.setNoNetwork();

@@ -15,10 +15,18 @@ import me.moderator_man.osml.util.Util;
 public class DownloadSystem extends Thread
 {
 	private boolean complete;
+	private boolean hasName;
+	private String username;
 	
 	public DownloadSystem()
 	{
 		complete = false;
+	}
+	
+	public DownloadSystem(String username)
+	{
+		hasName = true;
+		this.username = username;
 	}
 	
 	public void run()
@@ -69,17 +77,31 @@ public class DownloadSystem extends Thread
 			
 			if (!file.exists())
 			{
-				downloadList("https://www.oldschoolminecraft.com/launcher/", new String[] { "minecraft.jar" }, Util.getBinPath());
+				if (hasName)
+					downloadFile("https://www.oldschoolminecraft.com/launcher/download.php?username=" + username, Util.getBinPath() + "minecraft.jar");
+				else
+					downloadFile("https://www.oldschoolminecraft.com/launcher/download.php", Util.getBinPath() + "minecraft.jar");
+				//downloadList("https://www.oldschoolminecraft.com/launcher/", new String[] { "minecraft.jar" }, Util.getBinPath());
 			} else {
-				String latestChecksum = QueryAPI.get("https://www.oldschoolminecraft.com/launcher/versioncheck.php");
+				String latestChecksum = "";
+				
+				if (hasName)
+					latestChecksum = QueryAPI.get("https://www.oldschoolminecraft.com/launcher/versioncheck.php?username=" + username);
+				else
+					latestChecksum = QueryAPI.get("https://www.oldschoolminecraft.com/launcher/versioncheck.php");
+				//String latestChecksum = QueryAPI.get("https://www.oldschoolminecraft.com/launcher/versioncheck.php");
 				String currentChecksum = Util.getMD5Checksum(Util.getBinPath() + "minecraft.jar");
 				
-				if (currentChecksum != latestChecksum)
+				if (!currentChecksum.equals(latestChecksum))
 				{
 					file.delete();
-					downloadList("https://www.oldschoolminecraft.com/launcher/", new String[] { "minecraft.jar" }, Util.getBinPath());
-				} else
+					if (hasName)
+						downloadFile("https://www.oldschoolminecraft.com/launcher/download.php?username=" + username, Util.getBinPath() + "minecraft.jar");
+					else
+						downloadFile("https://www.oldschoolminecraft.com/launcher/download.php", Util.getBinPath() + "minecraft.jar");
+				} else {
 					Logger.log(String.format("No client update available (current=%s, latest=%s)", currentChecksum, latestChecksum));
+				}
 			}
 		} catch (Exception ex) {
 			ex.printStackTrace();
