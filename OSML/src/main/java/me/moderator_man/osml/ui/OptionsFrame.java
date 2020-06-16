@@ -1,13 +1,10 @@
 package me.moderator_man.osml.ui;
 
 import java.awt.Color;
-import java.awt.Desktop;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.net.URI;
 
 import javax.imageio.ImageIO;
-import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
@@ -84,7 +81,23 @@ public class OptionsFrame extends JDialog
             ramAllocation.setValue(Main.config.ramMb);
             cbDisableUpdate.setSelected(Main.config.disableUpdate);
             cbLegacyUI.setSelected(Main.config.legacyUI);
+            
+            TransparentButton btnCosmetics = new TransparentButton("Save & Close");
+            btnCosmetics.setText("Cosmetics");
+            btnCosmetics.setBounds(190, 65, 95, 23);
+            backgroundPanel.add(btnCosmetics);
 			
+            // cosmetics button action
+            btnCosmetics.addActionListener((event) ->
+            {
+                Login login = new Login((sessionId) ->
+                {
+                    new CosmeticsManager(sessionId).setVisible(true);
+                });
+                login.setVisible(true);
+                //setVisible(false);
+            });
+            
 			// save button action
 			btnSaveClose.addActionListener(new ActionListener()
 			{
