@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import me.moderator_man.osml.DownloadSystem;
 import me.moderator_man.osml.Main;
 import me.moderator_man.osml.ui.MainFrame;
+import me.moderator_man.osml.util.OS;
 import me.moderator_man.osml.util.StaticData;
 import me.moderator_man.osml.util.Util;
 
@@ -19,7 +20,8 @@ public class Launcher
         libsb.append(os_library("minecraft.jar"));
         String libs = libsb.toString();
         
-        String java_path = "javaw";
+        boolean windows = OS.getOS() == OS.Windows;
+        String java_path = windows ? "javaw" : "java";
         
         ArrayList<String> params = new ArrayList<String>();
         
@@ -79,7 +81,8 @@ public class Launcher
         libsb.append(os_library("minecraft.jar"));
         String libs = libsb.toString();
         
-        String java_path = "javaw";
+        boolean windows = OS.getOS() == OS.Windows;
+        String java_path = windows ? "javaw" : "java";
 	    
 	    ArrayList<String> params = new ArrayList<String>();
         
