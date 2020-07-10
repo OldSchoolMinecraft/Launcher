@@ -5,7 +5,6 @@ import java.awt.Cursor;
 import java.awt.Desktop;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
-import java.awt.Dialog.ModalityType;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.net.URL;

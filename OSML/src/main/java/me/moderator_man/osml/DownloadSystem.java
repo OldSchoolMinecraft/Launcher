@@ -118,6 +118,15 @@ public class DownloadSystem extends Thread
 				Logger.log(String.format("Skipping '%s': already exists", item));
 				continue;
 			}
+			if (OS.getOS() == OS.Linux && (item.toLowerCase().contains("lwjgl") || item.toLowerCase().contains("openal")))
+			{
+			    String arch = System.getProperty("sun.arch.data.model");
+			    if (arch.contains("64") && item.contains("64"))
+			    {
+			        downloadFile(base + item, target_directory + item.replace("64", ""));
+			        continue;
+			    }
+			}
 			downloadFile(base + item, target_directory + item);
 		}
 	}

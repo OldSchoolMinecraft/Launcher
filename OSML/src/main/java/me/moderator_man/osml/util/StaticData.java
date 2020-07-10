@@ -24,12 +24,12 @@ public class StaticData
 	
 	public static final String[] natives_linux = new String[]
 	{
-		"lwjgl.so",
-		"lwjgl64.so",
-		"openal.so",
-		"openal64.so",
-		"jinput.so",
-		"jinput64.so",
+		"liblwjgl.so",
+		"liblwjgl64.so",
+		"libopenal.so",
+		"libopenal64.so",
+		"libjinput-linux.so",
+		"libjinput-linux64.so",
 	};
 	
 	public static final String[] libraries = new String[]

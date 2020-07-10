@@ -6,7 +6,9 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.geom.Point2D;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.io.InputStream;
 
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
@@ -22,9 +24,11 @@ public class TexturedPanel extends JPanel
 		setOpaque(true);
 		try
 		{
-			this.bgImage = ImageIO.read(getClass().getClassLoader().getResource("dirt.png")).getScaledInstance(32, 32, 16);
-		} catch (IOException e)
-		{
+		    InputStream resource = getClass().getClassLoader().getResourceAsStream("dirt.png");
+		    BufferedImage preImage = ImageIO.read(resource);
+		    Image postImage = preImage.getScaledInstance(32, 32, 16);
+			this.bgImage = postImage;
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}

@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import me.moderator_man.osml.DownloadSystem;
 import me.moderator_man.osml.Main;
 import me.moderator_man.osml.ui.MainFrame;
+import me.moderator_man.osml.util.Logger;
 import me.moderator_man.osml.util.OS;
 import me.moderator_man.osml.util.StaticData;
 import me.moderator_man.osml.util.Util;
@@ -84,6 +85,13 @@ public class Launcher
         boolean windows = OS.getOS() == OS.Windows;
         String java_path = windows ? "javaw" : "java";
 	    
+        Logger.log("Launcher/Path: " + java_path);
+        Logger.log("Launcher/Natives: " + new File(Util.getNativesPath()).getAbsolutePath());
+        
+        System.setProperty("java.library.path", new File(Util.getNativesPath()).getAbsolutePath());
+        System.setProperty("org.lwjgl.librarypath", new File(Util.getNativesPath()).getAbsolutePath());
+        System.setProperty("net.java.games.input.librarypath", new File(Util.getNativesPath()).getAbsolutePath());
+        
 	    ArrayList<String> params = new ArrayList<String>();
         
         params.add(java_path);
@@ -92,7 +100,9 @@ public class Launcher
         params.add("-Dsun.java2d.d3d=false");
         params.add("-Dsun.java2d.opengl=false");
         params.add("-Dsun.java2d.pmoffscreen=false");
-        params.add("-Djava.library.path=" + Util.getNativesPath());
+        params.add("-Djava.library.path=" + new File(Util.getNativesPath()).getAbsolutePath());
+        params.add("-Dorg.lwjgl.librarypath=" + new File(Util.getNativesPath()).getAbsolutePath());
+        params.add("-Dnet.java.games.input.librarypath" + new File(Util.getNativesPath()).getAbsolutePath());
         params.add("-classpath");
         params.add(libs);
         params.add("net.minecraft.client.Minecraft");

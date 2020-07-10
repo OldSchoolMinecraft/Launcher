@@ -1,9 +1,8 @@
 package me.moderator_man.osml.ui;
 
-import java.awt.Dialog.ModalityType;
-
 import javax.imageio.ImageIO;
 import javax.swing.JDialog;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
@@ -34,7 +33,11 @@ public class CosmeticsManager extends JDialog
         }
         
         if (sessionId == null)
+        {
+            JOptionPane.showMessageDialog(null, "SessionID is null", "Oh noes!", JOptionPane.INFORMATION_MESSAGE);
             setVisible(false);
+            return;
+        }
         
         setTitle("Manage Cosmetics");
         setType(Type.NORMAL);

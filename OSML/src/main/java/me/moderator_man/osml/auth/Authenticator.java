@@ -21,7 +21,7 @@ public class Authenticator
 	
 	public void tryAuth2(String username, String password)
 	{
-JSONObject obj = new JSONObject(get(String.format("http://api.oldschoolminecraft.com:8080/v2/login?username=%s&password=%s", username, hash(password))));
+	    JSONObject obj = new JSONObject(get(String.format("http://api.oldschoolminecraft.com:8080/v2/login?username=%s&password=%s", username, hash(password))));
         
         if (obj.has("sessionId"))
         {
