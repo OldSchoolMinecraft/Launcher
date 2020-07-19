@@ -7,6 +7,8 @@ import java.net.URI;
 import java.security.MessageDigest;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Util
 {
@@ -27,6 +29,13 @@ public class Util
         } else
             linuxHomeDir = linux_home;
 
+    }
+    
+    public static boolean isEmail(String email)
+    {
+        Pattern pattern = Pattern.compile("[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}");
+        Matcher mat = pattern.matcher(email);
+        return mat.matches();
     }
 
     /*

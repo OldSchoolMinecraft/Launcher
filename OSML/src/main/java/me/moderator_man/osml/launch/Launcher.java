@@ -13,7 +13,7 @@ import me.moderator_man.osml.util.Util;
 
 public class Launcher
 {
-    public void legacyLaunch(String username, String sessionId)
+    public void legacyLaunch(String username, String sessionId, String uuid, boolean mojang)
     {
         StringBuilder libsb = new StringBuilder();
         for (int i = 0; i < StaticData.libraries.length; i++)
@@ -38,7 +38,11 @@ public class Launcher
         params.add("net.minecraft.client.Minecraft");
         params.add(username);
         params.add(sessionId);
+        if (uuid != null)
+            params.add(uuid);
         params.add("--enable-auth");
+        if (mojang)
+            params.add("--mojang-auth");
         
         launch(username, params, true);
     }
@@ -74,7 +78,7 @@ public class Launcher
         }).start();
     }
     
-	public void launch(String username, String sessionId)
+	public void launch(String username, String sessionId, String uuid, boolean mojang)
 	{
 	    StringBuilder libsb = new StringBuilder();
         for (int i = 0; i < StaticData.libraries.length; i++)
@@ -108,7 +112,11 @@ public class Launcher
         params.add("net.minecraft.client.Minecraft");
         params.add(username);
         params.add(sessionId);
+        if (uuid != null)
+            params.add(uuid);
         params.add("--enable-auth");
+        if (mojang)
+            params.add("--mojang-auth");
         
         launch(username, params, false);
 	}

@@ -82,7 +82,7 @@ public class LauncherFrame extends Frame
 			auth.tryAuth(username, password);
 			if (auth.isAuthenticated())
 			{
-			    new Launcher().legacyLaunch(username, auth.getSessionID());
+			    new Launcher().legacyLaunch(username, auth.getSessionID(), auth.getUUID(), auth.isMojang());
 			    setVisible(false);
 			} else {
 			    showError("Invalid username or password!");

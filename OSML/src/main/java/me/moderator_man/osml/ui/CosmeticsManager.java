@@ -56,15 +56,18 @@ public class CosmeticsManager extends JDialog
         backgroundPanel.setLayout(null);
         
         TransparentButton btnColorPicker = new TransparentButton("Color Picker");
+        btnColorPicker.setEnabled(false);
         btnColorPicker.setBounds(116, 73, 107, 23);
         backgroundPanel.add(btnColorPicker);
         
         txtNametagHex = new JTextField();
+        txtNametagHex.setEnabled(false);
         txtNametagHex.setBounds(10, 74, 96, 20);
         backgroundPanel.add(txtNametagHex);
         txtNametagHex.setColumns(10);
         
         TransparentCheckbox chckbxRainbow = new TransparentCheckbox("Rainbow");
+        chckbxRainbow.setEnabled(false);
         chckbxRainbow.setBounds(116, 43, 67, 23);
         backgroundPanel.add(chckbxRainbow);
         
@@ -77,16 +80,19 @@ public class CosmeticsManager extends JDialog
         backgroundPanel.add(btnSave);
         
         TransparentCheckbox chkbxEnableCloak = new TransparentCheckbox("Rainbow");
+        chkbxEnableCloak.setEnabled(false);
         chkbxEnableCloak.setText("Enable Cloak");
         chkbxEnableCloak.setBounds(10, 145, 89, 23);
         backgroundPanel.add(chkbxEnableCloak);
         
         TransparentButton btnChooseSkin = new TransparentButton("Color Picker");
+        btnChooseSkin.setEnabled(false);
         btnChooseSkin.setText("Choose Skin");
         btnChooseSkin.setBounds(10, 11, 96, 23);
         backgroundPanel.add(btnChooseSkin);
         
         TransparentButton btnChooseCloak = new TransparentButton("Color Picker");
+        btnChooseCloak.setEnabled(false);
         btnChooseCloak.setText("Choose Cloak");
         btnChooseCloak.setBounds(116, 11, 107, 23);
         backgroundPanel.add(btnChooseCloak);

@@ -197,6 +197,8 @@ public class MainFrame
 		{
 			public void actionPerformed(ActionEvent e)
 			{
+			    setLoggingIn();
+			    
 				if (cbRememberPassword.isSelected())
 				{
 					Main.config.rememberPassword = true;
@@ -222,9 +224,10 @@ public class MainFrame
 					btnLogin.setEnabled(false);
 					cbRememberPassword.setEnabled(false);
 					refresh(backgroundPanel);
-					new Launcher().launch(username, auth.getSessionID());
+					new Launcher().launch(auth.getUsername(), auth.getSessionID(), auth.getUUID(), auth.isMojang());
 				} else {
-					JOptionPane.showConfirmDialog(null, "Invalid username or password!", "Invalid credentials", JOptionPane.DEFAULT_OPTION, JOptionPane.ERROR_MESSAGE);
+				    setLoginFailed();
+					//JOptionPane.showConfirmDialog(null, "Invalid username or password!", "Invalid credentials", JOptionPane.DEFAULT_OPTION, JOptionPane.ERROR_MESSAGE);
 				}
 			}
 		});
@@ -264,6 +267,8 @@ public class MainFrame
 		JPanel root = (JPanel) frmOldSchoolMinecraft.getContentPane();
 		JPanel bgp = (JPanel) root.getComponent(0);
 		JLabel dl = (JLabel) bgp.getComponent(Main.updateAvailable ? 12 : 11);
+		
+		dl.setForeground(Color.green);
 		dl.setText("Downloading...");
 		dl.setVisible(true);
 		refresh(bgp);
@@ -275,8 +280,33 @@ public class MainFrame
 		JPanel bgp = (JPanel) root.getComponent(0);
 		JLabel dl = (JLabel) bgp.getComponent(Main.updateAvailable ? 12 : 11);
 		
+		dl.setForeground(Color.green);
 		dl.setText("Launching...");
 		dl.setVisible(true);
 		refresh(bgp);
+	}
+	
+	public void setLoggingIn()
+	{
+	    JPanel root = (JPanel) frmOldSchoolMinecraft.getContentPane();
+        JPanel bgp = (JPanel) root.getComponent(0);
+        JLabel dl = (JLabel) bgp.getComponent(Main.updateAvailable ? 12 : 11);
+        
+        dl.setForeground(Color.green);
+        dl.setText("Logging in...");
+        dl.setVisible(true);
+        refresh(bgp);
+	}
+	
+	public void setLoginFailed()
+	{
+	    JPanel root = (JPanel) frmOldSchoolMinecraft.getContentPane();
+        JPanel bgp = (JPanel) root.getComponent(0);
+        JLabel dl = (JLabel) bgp.getComponent(Main.updateAvailable ? 12 : 11);
+        
+        dl.setForeground(Color.red);
+        dl.setText("Login failed");
+        dl.setVisible(true);
+        refresh(bgp);
 	}
 }

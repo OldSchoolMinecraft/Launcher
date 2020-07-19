@@ -9,7 +9,10 @@ public class Configuration implements Serializable
 	public boolean disableUpdate;
 	public boolean rememberPassword;
 	public boolean legacyUI;
+	public boolean experimental;
 	public int ramMb;
 	public String username;
 	public String password;
+	public String accessToken;
+	public String clientToken;
 }

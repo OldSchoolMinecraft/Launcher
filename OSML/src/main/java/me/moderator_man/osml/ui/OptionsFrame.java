@@ -82,10 +82,23 @@ public class OptionsFrame extends JDialog
             cbDisableUpdate.setSelected(Main.config.disableUpdate);
             cbLegacyUI.setSelected(Main.config.legacyUI);
             
-            TransparentButton btnCosmetics = new TransparentButton("Save & Close");
-            btnCosmetics.setText("Cosmetics");
+            JCheckBox cbExperimental = new JCheckBox("Experimental");
+            cbExperimental.setOpaque(false);
+            cbExperimental.setForeground(Color.WHITE);
+            cbExperimental.setBounds(10, 55, 131, 23);
+            backgroundPanel.add(cbExperimental);
+            
+            TransparentButton btnCosmetics = new TransparentButton("Cosmetics");
+            btnCosmetics.setEnabled(cbExperimental.isSelected());
             btnCosmetics.setBounds(190, 65, 95, 23);
             backgroundPanel.add(btnCosmetics);
+            
+            JLabel lblVersion = new JLabel("OSML v00");
+            lblVersion.setForeground(Color.WHITE);
+            lblVersion.setBounds(129, 101, 51, 14);
+            backgroundPanel.add(lblVersion);
+            
+            lblVersion.setText("OSML v" + Main.VERSION);
 			
             // cosmetics button action
             btnCosmetics.addActionListener((event) ->
@@ -115,6 +128,7 @@ public class OptionsFrame extends JDialog
 					        Main.config.disableUpdate = cbDisableUpdate.isSelected();
 					        Main.config.legacyUI = cbLegacyUI.isSelected();
 					        Main.config.ramMb = (int) ramAllocation.getValue();
+					        Main.config.experimental = cbExperimental.isSelected();
 					        
 					        saveAndClose();
 					        System.exit(0);
