@@ -7,7 +7,6 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
 import javax.imageio.ImageIO;
-import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
@@ -218,13 +217,18 @@ public class MainFrame
 				
 				if (auth.isAuthenticated())
 				{
+				    String usernameToUse = auth.getUsername();
+				    
+				    if (Main.config.overrideName)
+				        usernameToUse = JOptionPane.showInputDialog("Username override is enabled!\nWhat username would you like to use?");
+				    
 					txtUsername.setEnabled(false);
 					txtPassword.setEnabled(false);
 					btnOptions.setEnabled(false);
 					btnLogin.setEnabled(false);
 					cbRememberPassword.setEnabled(false);
 					refresh(backgroundPanel);
-					new Launcher().launch(auth.getUsername(), auth.getSessionID(), auth.getUUID(), auth.isMojang());
+					new Launcher().launch(usernameToUse, auth.getSessionID(), auth.getUUID(), auth.isMojang());
 				} else {
 				    setLoginFailed();
 					//JOptionPane.showConfirmDialog(null, "Invalid username or password!", "Invalid credentials", JOptionPane.DEFAULT_OPTION, JOptionPane.ERROR_MESSAGE);

@@ -17,7 +17,7 @@ import me.moderator_man.osml.util.Util;
 
 public class Main
 {
-	public static final int VERSION = 11;
+	public static final int VERSION = 12;
 	
 	public static Configuration config;
 	public static boolean updateAvailable = false;
@@ -105,6 +105,7 @@ public class Main
 	            Logger.log("Config/disableUpdate: " + config.disableUpdate);
 	            Logger.log("Config/rememberPassword: " + config.rememberPassword);
 	            Logger.log("Config/legacyUI: " + config.legacyUI);
+	            Logger.log("Config/overrideName: " + config.overrideName);
 	        }
 		} catch (Exception ex) {
 		    deleteFile(getConfigPath());

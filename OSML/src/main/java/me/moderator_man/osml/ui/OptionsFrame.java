@@ -19,6 +19,7 @@ public class OptionsFrame extends JDialog
 	private static final long serialVersionUID = 1L;
 	
 	private boolean legacyOnCreated;
+	private boolean nameOverrideOnCreated;
 	
 	/**
 	 * Create the dialog.
@@ -26,6 +27,7 @@ public class OptionsFrame extends JDialog
 	public OptionsFrame()
 	{
 	    legacyOnCreated = Main.config.legacyUI;
+	    nameOverrideOnCreated = Main.config.overrideName;
 	    
 		setModalityType(ModalityType.APPLICATION_MODAL);
 		
@@ -82,14 +84,15 @@ public class OptionsFrame extends JDialog
             cbDisableUpdate.setSelected(Main.config.disableUpdate);
             cbLegacyUI.setSelected(Main.config.legacyUI);
             
-            JCheckBox cbExperimental = new JCheckBox("Experimental");
-            cbExperimental.setOpaque(false);
-            cbExperimental.setForeground(Color.WHITE);
-            cbExperimental.setBounds(10, 55, 131, 23);
-            backgroundPanel.add(cbExperimental);
+            JCheckBox cbNameOverride = new JCheckBox("Username Override");
+            cbNameOverride.setOpaque(false);
+            cbNameOverride.setForeground(Color.WHITE);
+            cbNameOverride.setBounds(10, 57, 131, 23);
+            cbNameOverride.setSelected(Main.config.overrideName);
+            backgroundPanel.add(cbNameOverride);
             
             TransparentButton btnCosmetics = new TransparentButton("Cosmetics");
-            btnCosmetics.setEnabled(cbExperimental.isSelected());
+            btnCosmetics.setEnabled(cbNameOverride.isSelected());
             btnCosmetics.setBounds(190, 65, 95, 23);
             backgroundPanel.add(btnCosmetics);
             
@@ -103,12 +106,7 @@ public class OptionsFrame extends JDialog
             // cosmetics button action
             btnCosmetics.addActionListener((event) ->
             {
-                Login login = new Login((sessionId) ->
-                {
-                    new CosmeticsManager(sessionId).setVisible(true);
-                });
-                login.setVisible(true);
-                //setVisible(false);
+                new CosmeticsManager().setVisible(true);
             });
             
 			// save button action
@@ -116,6 +114,22 @@ public class OptionsFrame extends JDialog
 			{
 				public void actionPerformed(ActionEvent e)
 				{
+				    if (cbNameOverride.isSelected() && cbNameOverride.isSelected() != nameOverrideOnCreated)
+				    {
+				        int n = JOptionPane.showConfirmDialog(
+                                null,
+                                "Are you sure you want to enable the username override?\nYou only need to use this if your email is being used in place of your actual name!",
+                                "Wait!",
+                                JOptionPane.YES_NO_OPTION);
+                        if (n == JOptionPane.YES_OPTION)
+                        {
+                            // continue as normal
+                        } else {
+                            // disable username override
+                            cbNameOverride.setSelected(false);
+                        }
+				    }
+				    
 					if (cbLegacyUI.isSelected() != legacyOnCreated)
 					{
 					    int n = JOptionPane.showConfirmDialog(
@@ -128,7 +142,7 @@ public class OptionsFrame extends JDialog
 					        Main.config.disableUpdate = cbDisableUpdate.isSelected();
 					        Main.config.legacyUI = cbLegacyUI.isSelected();
 					        Main.config.ramMb = (int) ramAllocation.getValue();
-					        Main.config.experimental = cbExperimental.isSelected();
+					        Main.config.overrideName = cbNameOverride.isSelected();
 					        
 					        saveAndClose();
 					        System.exit(0);
@@ -141,6 +155,7 @@ public class OptionsFrame extends JDialog
 					Main.config.disableUpdate = cbDisableUpdate.isSelected();
                     Main.config.legacyUI = cbLegacyUI.isSelected();
                     Main.config.ramMb = (int)ramAllocation.getValue();
+                    Main.config.overrideName = cbNameOverride.isSelected();
                     
                     saveAndClose();
 				}
