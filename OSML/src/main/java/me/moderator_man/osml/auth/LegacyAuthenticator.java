@@ -246,20 +246,13 @@ public class LegacyAuthenticator
             wr.flush();
 
             StringBuilder sb = new StringBuilder();
-            int HttpResult = con.getResponseCode();
-            if (HttpResult == HttpURLConnection.HTTP_OK)
-            {
-                BufferedReader br = new BufferedReader(new InputStreamReader(con.getInputStream(), "utf-8"));
-                String line = null;
-                while ((line = br.readLine()) != null)
-                    sb.append(line + "\n");
-                br.close();
-                return new JSONObject(sb.toString());
-            } else {
-                JSONObject obj = new JSONObject();
-                obj.put("error", "Server returned non-200 response: " + HttpResult);
-                return obj;
-            }
+            int responseCode = con.getResponseCode();
+            BufferedReader br = new BufferedReader(new InputStreamReader(con.getInputStream(), "utf-8"));
+            String line = null;
+            while ((line = br.readLine()) != null)
+                sb.append(line + "\n");
+            br.close();
+            return new JSONObject(sb.toString());
         } catch (Exception ex) {
             ex.printStackTrace();
             JSONObject obj = new JSONObject();
