@@ -255,6 +255,10 @@ public class LegacyAuthenticator
                     sb.append(line + "\n");
                 br.close();
                 return new JSONObject(sb.toString());
+            } else {
+                JSONObject obj = new JSONObject();
+                obj.put("error", "Server returned non-200 response: " + HttpResult);
+                return obj;
             }
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -262,8 +266,8 @@ public class LegacyAuthenticator
             obj.put("error", "Something went wrong: " + ex.getMessage());
             return obj;
         }
-        JSONObject obj = new JSONObject();
+        /*JSONObject obj = new JSONObject();
         obj.put("error", "Can this even happen?");
-        return obj;
+        return obj;*/
     }
 }
