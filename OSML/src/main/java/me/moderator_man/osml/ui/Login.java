@@ -19,7 +19,7 @@ import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
 import me.moderator_man.osml.LoginPipe;
-import me.moderator_man.osml.auth.Authenticator;
+import me.moderator_man.osml.auth.LegacyAuthenticator;
 import me.moderator_man.osml.ui.legacy.TransparentLabel;
 
 public class Login extends JDialog
@@ -84,7 +84,7 @@ public class Login extends JDialog
         
         btnLogin.addActionListener((event) ->
         {
-            Authenticator auth = new Authenticator();
+            LegacyAuthenticator auth = new LegacyAuthenticator();
             auth.tryAuth(txtUsername.getText(), new String(txtPassword.getPassword()));
             if (auth.isAuthenticated())
             {

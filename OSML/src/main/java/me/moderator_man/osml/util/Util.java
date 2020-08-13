@@ -1,14 +1,21 @@
 package me.moderator_man.osml.util;
 
 import java.awt.Desktop;
+import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.net.HttpURLConnection;
 import java.net.URI;
+import java.net.URL;
 import java.security.MessageDigest;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.json.JSONObject;
 
 public class Util
 {
@@ -36,6 +43,45 @@ public class Util
         Pattern pattern = Pattern.compile("[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}");
         Matcher mat = pattern.matcher(email);
         return mat.matches();
+    }
+    
+    public static JSONObject postJSON(String url, JSONObject payload)
+    {
+        try
+        {
+            URL object = new URL(url);
+
+            HttpURLConnection con = (HttpURLConnection) object.openConnection();
+            con.setDoOutput(true);
+            con.setDoInput(true);
+            con.setRequestProperty("Content-Type", "application/json");
+            con.setRequestProperty("Accept", "application/json");
+            con.setRequestMethod("POST");
+
+            OutputStreamWriter wr = new OutputStreamWriter(con.getOutputStream());
+            wr.write(payload.toString());
+            wr.flush();
+
+            StringBuilder sb = new StringBuilder();
+            int HttpResult = con.getResponseCode();
+            if (HttpResult == HttpURLConnection.HTTP_OK)
+            {
+                BufferedReader br = new BufferedReader(new InputStreamReader(con.getInputStream(), "utf-8"));
+                String line = null;
+                while ((line = br.readLine()) != null)
+                    sb.append(line + "\n");
+                br.close();
+                return new JSONObject(sb.toString());
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            JSONObject obj = new JSONObject();
+            obj.put("error", "Something went wrong: " + ex.getMessage());
+            return obj;
+        }
+        JSONObject obj = new JSONObject();
+        obj.put("error", "Can this even happen?");
+        return obj;
     }
 
     /*

@@ -17,7 +17,7 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
 import me.moderator_man.osml.Main;
-import me.moderator_man.osml.auth.Authenticator;
+import me.moderator_man.osml.auth.LegacyAuthenticator;
 import me.moderator_man.osml.launch.Launcher;
 import me.moderator_man.osml.util.Util;
 
@@ -211,11 +211,17 @@ public class MainFrame
 				
 				Main.saveConfig();
 				
-				Authenticator auth = new Authenticator();
+				LegacyAuthenticator auth = new LegacyAuthenticator();
 				String username = txtUsername.getText().trim();
 				auth.tryAuth(username, String.valueOf(txtPassword.getPassword()));
 				
-				if (auth.isAuthenticated())
+				if (auth.hasError())
+				{
+				    JOptionPane.showMessageDialog(null, auth.getErrorMessage());
+				    setLoginFailed();
+				}
+				
+				if (auth.isAuthenticated() && !auth.hasError())
 				{
 				    String usernameToUse = auth.getUsername();
 				    

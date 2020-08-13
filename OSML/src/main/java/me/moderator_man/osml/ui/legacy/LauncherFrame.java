@@ -15,7 +15,7 @@ import javax.swing.JPanel;
 import javax.swing.UIManager;
 
 import me.moderator_man.osml.Main;
-import me.moderator_man.osml.auth.Authenticator;
+import me.moderator_man.osml.auth.LegacyAuthenticator;
 import me.moderator_man.osml.launch.Launcher;
 
 public class LauncherFrame extends Frame
@@ -78,7 +78,7 @@ public class LauncherFrame extends Frame
 	{
 		try
 		{
-			Authenticator auth = new Authenticator();
+			LegacyAuthenticator auth = new LegacyAuthenticator();
 			auth.tryAuth(username, password);
 			if (auth.isAuthenticated())
 			{
