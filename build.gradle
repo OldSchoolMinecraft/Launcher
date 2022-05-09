@@ -1,43 +1,23 @@
-apply plugin: 'java'
-apply plugin: 'idea'
+plugins {
+    id 'java'
+    id 'idea'
+    id "com.github.johnrengelman.shadow" version "7.1.2"
+}
 
-version = '1.0'
-
-repositories
-{
-	maven
-	{
-        url "https://libraries.minecraft.net/"
-    }
+repositories  {
     jcenter()
     mavenCentral()
 }
 
-configurations
-{
-    extraLibs
-}
-
-dependencies
-{
+dependencies {
 	//extraLibs group: 'org.json', name: 'json', version: '20190722'
 	implementation group: 'org.json', name: 'json', version: '20190722'
-	
-	//extraLibs group: 'net.minecraft', name: 'launchwrapper', version: '1.5'
-	implementation group: 'net.minecraft', name: 'launchwrapper', version: '1.5'
 }
 
-jar
-{
-	from
-	{
-        configurations.extraLibs.collect { it.isDirectory() ? it : zipTree(it) }
-    }
-	
-    manifest
-    {
+jar {
+    manifest {
         attributes 'Implementation-Title': 'OSML',  
-        	'Implementation-Version': version,
+        	'Implementation-Version': '1.0',
         	'Main-Class': 'me.moderator_man.osml.Main'
     }
 }

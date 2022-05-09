@@ -17,7 +17,7 @@ import me.moderator_man.osml.util.Util;
 
 public class Main
 {
-	public static final int VERSION = 17;
+	public static final int VERSION = 18;
 
 	public static Configuration config;
 	public static boolean updateAvailable = false;
@@ -119,11 +119,6 @@ public class Main
 	            Logger.log("Finished reading config, no problems.");
 
 	            config.legacyUI = false;
-
-	            Logger.log("Config/disableUpdate: " + config.disableUpdate);
-	            Logger.log("Config/rememberPassword: " + config.rememberPassword);
-	            Logger.log("Config/legacyUI: " + config.legacyUI);
-	            Logger.log("Config/disableJavaCheck: " + config.disableJavaCheck);
 	        }
 		} catch (Exception ex) {
 		    deleteFile(getConfigPath());
