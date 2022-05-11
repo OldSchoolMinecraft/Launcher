@@ -2,8 +2,19 @@ package me.moderator_man.osml;
 
 import java.awt.EventQueue;
 import java.io.File;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.security.KeyStore;
+import java.security.cert.Certificate;
+import java.security.cert.CertificateFactory;
+import java.security.cert.X509Certificate;
 
 import javax.imageio.ImageIO;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.TrustManagerFactory;
 import javax.swing.*;
 
 import me.moderator_man.osml.io.FormatReader;
@@ -58,6 +69,10 @@ public class Main
 
 		try
 		{
+			// ensure latest LetsEncrypt certificates are installed & trusted
+			final String[] certs = { "/isrgrootx1.der", "/lets-encrypt-r3.der" };
+			setTrustStore(certs, "changeit");
+
 			// Find user's home directory if running from an Linux OS
 			if (OS.getOS() == OS.Linux) Util.findLinuxHomeDirectory();
 
@@ -157,6 +172,27 @@ public class Main
 			}
 		});
 	}
+
+	private static void setTrustStore(final String[] trustStoreString, final String password) throws Exception
+	{
+		final TrustManagerFactory trustManagerFactory = TrustManagerFactory.getInstance("X509");
+		final KeyStore keystore = KeyStore.getInstance(KeyStore.getDefaultType());
+		final Path ksPath = Paths.get(System.getProperty("java.home"), "lib", "security", "cacerts");
+		keystore.load(Files.newInputStream(ksPath), password.toCharArray());
+		for (final String trustStore : trustStoreString)
+		{
+			final InputStream keystoreStream = Main.class.getResourceAsStream(trustStore);
+			final CertificateFactory cf = CertificateFactory.getInstance("X.509");
+			final Certificate crt = cf.generateCertificate(keystoreStream);
+			Logger.log("Added certificate for " + ((X509Certificate)crt).getSubjectDN());
+			keystore.setCertificateEntry(trustStore.replace(".der", ""), crt);
+		}
+		trustManagerFactory.init(keystore);
+		final TrustManager[] trustManagers = trustManagerFactory.getTrustManagers();
+		final SSLContext sc = SSLContext.getInstance("SSL");
+		sc.init(null, trustManagers, null);
+		SSLContext.setDefault(sc);
+	}
 	
 	public static Configuration getDefaultConfig()
 	{
@@ -189,21 +225,11 @@ public class Main
 		}
 	}
 
-	public static void displayNotice()
-	{
-		JOptionPane.showMessageDialog(null, "Welcome to the OSML End of Life update. This software will not be receiving any updates in the future.\n\n" +
-																	"You should be aware that Mojang accounts (or any official accounts) will no longer work.\n" +
-																	"You MUST use an account registered on our website in order to play. You can use your email OR username.\n\n" +
-																	"A replacement for this launcher is currently in development. Please join our Discord for more information.\n\n" +
-																	"We're sorry for the inconvenience.\n" +
-																	"- Team Omega", "End of Life", JOptionPane.INFORMATION_MESSAGE);
-	}
-
 	public static void displayLTSNotice()
 	{
-		JOptionPane.showMessageDialog(null, "To buy us development time for Hydra Redux, we are applying some critical bug fixes to address recent issues.\n" +
+		JOptionPane.showMessageDialog(null, "Old School Minecraft is now offering extended support for OSML. Expect gradual improvements & tweaks.\n" +
 																	"We aren't making any promises, but we will try our best to keep this launcher in working order.\n\n" +
-																	"- Team Omega", "Long Term Service", JOptionPane.INFORMATION_MESSAGE);
+																	"- moderator_man", "Long Term Service", JOptionPane.INFORMATION_MESSAGE);
 	}
 
 	public static void warnJava()
