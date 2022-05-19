@@ -1,0 +1,82 @@
+@font-face {
+    font-family: 'Comfortaa';
+    src: url('fonts/Comfortaa-Regular.ttf');
+}
+
+@font-face {
+    font-family: 'Comfortaa';
+    src: url('fonts/Comfortaa-Bold.ttf');
+}
+
+@font-face {
+    font-family: 'Comfortaa';
+    src: url('fonts/Comfortaa-Light.ttf');
+}
+
+* {
+    -fx-font-family: 'Comfortaa';
+    -fx-focus-color: #00000000;
+}
+
+.check-box {
+    -fx-text-fill: #fff;
+}
+
+.tab {
+    -fx-background-color: #00000000;
+    -fx-border-color: #757575;
+    -fx-border-radius: 6px;
+    -fx-background-radius: 6px;
+    -fx-padding: 6px;
+}
+
+.tab .tab-label {
+    -fx-text-fill: #fff;
+}
+
+.tab-pane {
+    -fx-border-color: #75757500;
+    -fx-border-radius: 6px;
+    -fx-background-radius: 6px;
+}
+
+.tab-pane .tab-header-background {
+    -fx-background-color: #00000000;
+}
+
+.hyperlink:visited {
+    -fx-text-fill: #38488f;
+}
+
+.background {
+    -fx-background-image: url("../../dirt.png");
+    -fx-background-size: 16 16;
+    -fx-background-repeat: repeat;
+}
+
+.icon {
+    -fx-background-image: url("../../logo.png");
+    -fx-background-size: 315 130;
+    -fx-background-repeat: no-repeat;
+}
+
+.text-field {
+    -fx-background-color: #50505050;
+    -fx-text-fill: #ffffff;
+}
+
+.button {
+    -fx-background-color: #505050;
+    -fx-text-fill: #ffffff;
+    -fx-background-radius: 8px;
+    -fx-border-radius: 8px;
+}
+
+.label {
+    -fx-text-fill: #ffffff;
+    -fx-font-weight: bold;
+}
+
+#lblStatus {
+    -fx-font-weight: bold;
+}

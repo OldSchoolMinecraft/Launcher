@@ -1,23 +1,39 @@
 plugins {
     id 'java'
     id 'idea'
-    id "com.github.johnrengelman.shadow" version "7.1.2"
+    id 'application'
+    id "com.github.johnrengelman.shadow" version "6.1.0"
+    id 'org.openjfx.javafxplugin' version '0.0.10'
+}
+
+mainClassName = "me.moderator_man.osml.redux.Bootstrap"
+
+javafx {
+    version = "17.0.2"
+    modules = [ 'javafx.controls', 'javafx.fxml', 'javafx.graphics', 'javafx.media', 'javafx.swing', 'javafx.web' ]
+}
+
+shadowJar {
+    exclude("*.so", "javafx.*.jar")
 }
 
 repositories  {
-    jcenter()
     mavenCentral()
 }
 
 dependencies {
 	//extraLibs group: 'org.json', name: 'json', version: '20190722'
-	implementation group: 'org.json', name: 'json', version: '20190722'
+    implementation group: 'org.json', name: 'json', version: '20220320'
+    implementation group: 'commons-io', name: 'commons-io', version: '2.9.0'
+    implementation group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.13'
+    implementation group: 'com.google.code.gson', name: 'gson', version: '2.9.0'
+    implementation 'com.github.mouse0w0:darculafx:1.0.0'
 }
 
 jar {
     manifest {
-        attributes 'Implementation-Title': 'OSML',  
-        	'Implementation-Version': '1.0',
-        	'Main-Class': 'me.moderator_man.osml.Main'
+        attributes(
+            "Main-Class": mainClassName
+        )
     }
 }

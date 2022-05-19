@@ -1,0 +1,5 @@
+.icon {
+    -fx-background-image: url("../../logo.png");
+    -fx-background-size: 315 130;
+    -fx-background-repeat: no-repeat;
+}

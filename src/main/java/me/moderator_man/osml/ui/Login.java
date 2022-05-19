@@ -18,7 +18,7 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
-import me.moderator_man.osml.LoginPipe;
+import me.moderator_man.osml.util.LoginPipe;
 import me.moderator_man.osml.auth.LegacyAuthenticator;
 import me.moderator_man.osml.ui.legacy.TransparentLabel;
 
