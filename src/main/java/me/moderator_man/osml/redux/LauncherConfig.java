@@ -18,6 +18,7 @@ public class LauncherConfig
     public String javaExecutable;
     public String clientToken; // client token to be used for yggdrasil authentication
     public String uplink = "https://os-mc.net/launcher/uplink"; // URL to connect with remote update service
+    public String launcherTheme;
     public HashMap<String, String> accountTokenMap = new HashMap<>(); // allow multiple access tokens (for account manager?)
 
     public LauncherConfig() {}
@@ -33,5 +34,6 @@ public class LauncherConfig
         jvmArguments = "-Xmx1024M";
         javaExecutable = Util.getJavaExecutable().getAbsolutePath();
         clientToken = Util.generateToken();
+        launcherTheme = "darcula.css";
     }
 }

@@ -13,9 +13,9 @@
 
 <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="665.0" styleClass="background" stylesheets="@css/shared.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="me.moderator_man.osml.redux.controllers.OptionsController">
    <children>
-      <TabPane layoutX="11.0" layoutY="10.0" prefHeight="380.0" prefWidth="643.0" tabClosingPolicy="UNAVAILABLE">
+      <TabPane fx:id="tabPane" layoutX="11.0" layoutY="10.0" prefHeight="380.0" prefWidth="643.0" tabClosingPolicy="UNAVAILABLE">
         <tabs>
-          <Tab text="Basic Options">
+          <Tab fx:id="tBasic" text="Basic Options">
             <content>
               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
@@ -34,7 +34,7 @@
                   </AnchorPane>
             </content>
           </Tab>
-          <Tab text="Advanced Options">
+          <Tab fx:id="tAdvanced" disable="true" text="Advanced Options">
             <content>
               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
@@ -46,5 +46,6 @@
           </Tab>
         </tabs>
       </TabPane>
+      <Button fx:id="btnUnlock" layoutX="588.0" layoutY="13.0" mnemonicParsing="false" text="Unlock" />
    </children>
 </Pane>

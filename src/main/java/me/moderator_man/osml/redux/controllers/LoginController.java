@@ -1,14 +1,10 @@
 package me.moderator_man.osml.redux.controllers;
 
-import com.github.mouse0w0.darculafx.DarculaFX;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import me.moderator_man.osml.Main;
@@ -18,6 +14,9 @@ import me.moderator_man.osml.redux.auth.AuthUtility;
 import me.moderator_man.osml.redux.auth.YggdrasilAuthRequest;
 import me.moderator_man.osml.redux.auth.YggdrasilAuthResponse;
 import me.moderator_man.osml.redux.launch.LaunchUtility;
+import me.moderator_man.osml.util.Util;
+
+import java.io.File;
 
 public class LoginController extends ReduxController
 {
@@ -26,6 +25,7 @@ public class LoginController extends ReduxController
     @FXML protected Label lblStatus;
     @FXML protected TextField txtUsername;
     @FXML protected PasswordField txtPassword;
+    @FXML protected Hyperlink linkWebsite, linkDiscord, linkYouTube;
 
     private void setLock(boolean flag)
     {
@@ -37,8 +37,11 @@ public class LoginController extends ReduxController
 
     private void setStatusMessage(String msg, String color)
     {
-        lblStatus.setText(msg);
-        lblStatus.setStyle("-fx-text-fill: " + color);
+        Platform.runLater(() ->
+        {
+            lblStatus.setText(msg);
+            lblStatus.setStyle("-fx-text-fill: " + color);
+        });
     }
 
     @FXML protected void initialize()
@@ -54,6 +57,10 @@ public class LoginController extends ReduxController
 
         setupButtonAnimation(btnLogin, 1.1);
         setupButtonAnimation(btnOptions, 1.1);
+
+        linkWebsite.setOnAction(event -> Util.openNetpage("https://os-mc.net"));
+        linkDiscord.setOnAction(event -> Util.openNetpage("https://os-mc.net/discord"));
+        linkYouTube.setOnAction(event -> Util.openNetpage("https://youtube.com/OldSchoolMinecraft"));
 
         btnLogin.setOnAction((event) ->
         {
@@ -78,7 +85,7 @@ public class LoginController extends ReduxController
             {
                 if (config.exitAfterClose) System.exit(0);
                 else {
-                    Redux.getInstance().getPrimaryStage().show();
+                    Platform.runLater(() -> Redux.getInstance().getPrimaryStage().show());
                     setLock(false);
                 }
             });
@@ -93,7 +100,7 @@ public class LoginController extends ReduxController
             config.password = txtPassword.getText();
             Redux.getInstance().saveConfig();
 
-            launch.launch(txtUsername.getText());
+            launch.launch(authRes.selectedProfile.name);
         });
 
         btnOptions.setOnAction((event) ->
@@ -103,12 +110,14 @@ public class LoginController extends ReduxController
                 Stage newStage = new Stage();
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/Options.fxml"));
                 Scene scene = new Scene(loader.load());
+                File theme = new File(Util.getInstallDirectory(), "themes/" + config.launcherTheme);
+                if (!theme.exists()) System.out.println("The selected theme does not exist: " + theme.getName());
+                scene.getStylesheets().add("file://" + theme.getAbsolutePath());
                 newStage.setScene(scene);
                 newStage.setTitle("OSML v" + Main.VERSION);
                 newStage.setResizable(false);
                 newStage.initModality(Modality.APPLICATION_MODAL);
                 newStage.initOwner(Redux.getInstance().getPrimaryStage());
-                DarculaFX.applyDarculaStyle(scene);
                 newStage.show();
             } catch (Exception ex) {
                 ex.printStackTrace();

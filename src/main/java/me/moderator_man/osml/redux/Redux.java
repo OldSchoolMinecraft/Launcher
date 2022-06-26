@@ -3,16 +3,26 @@ package me.moderator_man.osml.redux;
 import com.github.mouse0w0.darculafx.DarculaFX;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.Dialog;
 import javafx.stage.Stage;
 import me.moderator_man.osml.Main;
 import me.moderator_man.osml.util.Logger;
 import me.moderator_man.osml.util.QueryAPI;
 import me.moderator_man.osml.util.Util;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
+
 import java.io.*;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.util.Objects;
+import java.util.Optional;
 
 public class Redux
 {
@@ -28,6 +38,7 @@ public class Redux
 
         patchLetsEncryptCerts();
         ensureDirectoryStructure();
+        unpackThemes();
         handleConfig();
         launchFXApp();
         handleUpdates();
@@ -48,20 +59,36 @@ public class Redux
 
     private void ensureDirectoryStructure()
     {
-        String INSTALL_DIRECTORY = Util.getInstallDirectory();
-        String LOGS_DIRECTORY = INSTALL_DIRECTORY + "logs/";
-        String BIN_DIRECTORY = INSTALL_DIRECTORY + "bin/";
-        String NATIVES_DIRECTORY = BIN_DIRECTORY + "natives";
+        File INSTALL_DIRECTORY = new File(Util.getInstallDirectory());
+        File LOGS_DIRECTORY = new File(INSTALL_DIRECTORY, "logs/");
+        File BIN_DIRECTORY = new File(INSTALL_DIRECTORY, "bin/");
+        File NATIVES_DIRECTORY = new File(BIN_DIRECTORY, "natives/");
+        File THEMES_DIRECTORY = new File(INSTALL_DIRECTORY, "themes/");
 
         Logger.log("Ensuring directory structure: " + INSTALL_DIRECTORY);
-        File inst_dir = new File(INSTALL_DIRECTORY);
-        if (!inst_dir.exists()) inst_dir.mkdir();
-        File logs_dir = new File(LOGS_DIRECTORY);
-        if (!logs_dir.exists()) logs_dir.mkdir();
-        File bin_dir = new File(BIN_DIRECTORY);
-        if (!bin_dir.exists()) bin_dir.mkdir();
-        File natives_dir = new File(NATIVES_DIRECTORY);
-        if (!natives_dir.exists()) natives_dir.mkdir();
+        if (!INSTALL_DIRECTORY.exists()) INSTALL_DIRECTORY.mkdir();
+        if (!LOGS_DIRECTORY.exists()) LOGS_DIRECTORY.mkdir();
+        if (!BIN_DIRECTORY.exists()) BIN_DIRECTORY.mkdir();
+        if (!NATIVES_DIRECTORY.exists()) NATIVES_DIRECTORY.mkdir();
+        if (!THEMES_DIRECTORY.exists()) THEMES_DIRECTORY.mkdir();
+    }
+
+    private void unpackThemes()
+    {
+        try
+        {
+            System.out.println("Unpacking themes");
+
+            String darcula = IOUtils.toString(Objects.requireNonNull(getClass().getResourceAsStream("/fxml/css/darcula.css")), StandardCharsets.UTF_8);
+
+            File themesDir = new File(Util.getInstallDirectory(), "themes/");
+            File darculaFile = new File(themesDir, "darcula.css");
+            FileUtils.writeStringToFile(darculaFile, darcula, StandardCharsets.UTF_8);
+            if (!darculaFile.setReadable(true)) System.out.println("Failed to make Darcula theme readable");;
+            if (!darculaFile.setWritable(true)) System.out.println("Failed to make Darcula theme writable");;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 
     private void handleConfig()
@@ -121,12 +148,27 @@ public class Redux
 
     public void alert(Alert.AlertType alertType, String msg, String title)
     {
+        alert(alertType, msg, title, false);
+    }
+
+    public void alert(Alert.AlertType alertType, String msg, String title, boolean wait)
+    {
         Alert alert = new Alert(alertType);
         alert.setTitle("System Alert");
         alert.setContentText(msg);
         alert.setResizable(false);
         alert.setHeaderText(title);
-        alert.show();
+        if (wait) alert.showAndWait();
+        else alert.show();
+    }
+
+    public boolean confirmAction(String msg, String title)
+    {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION, msg, ButtonType.YES, ButtonType.NO);
+        alert.setTitle("Confirm Action");
+        alert.setHeaderText(title);
+        alert.showAndWait();
+        return alert.getResult().equals(ButtonType.YES);
     }
 
     private void handleUpdates()
@@ -152,10 +194,12 @@ public class Redux
         {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/Login.fxml"));
             Scene scene = new Scene(loader.load());
+            File theme = new File(Util.getInstallDirectory(), "themes/" + config.launcherTheme);
+            if (!theme.exists()) System.out.println("The selected theme does not exist: " + theme.getName());
+            scene.getStylesheets().add(theme.exists() ? "file://" + theme.getAbsolutePath() : getClass().getResource("/fxml/css/darcula.css").toExternalForm());
             primaryStage.setScene(scene);
             primaryStage.setTitle("OSML v" + Main.VERSION);
             primaryStage.setResizable(false);
-            DarculaFX.applyDarculaStyle(scene);
             primaryStage.show();
         } catch (Exception ex) {
             System.out.println("Failed to launch FX application");
@@ -177,6 +221,15 @@ public class Redux
     {
         config = newConfig;
         saveConfig();
+    }
+
+    public void reloadTheme()
+    {
+        primaryStage.getScene().getStylesheets().clear();
+        File theme = new File(Util.getInstallDirectory(), "themes/" + config.launcherTheme);
+        if (!theme.exists()) System.out.println("The selected theme does not exist: " + theme.getName());
+        primaryStage.getScene().getStylesheets().add("file://" + theme.getAbsolutePath());
+        primaryStage.setResizable(false);
     }
 
     public static Redux getInstance()

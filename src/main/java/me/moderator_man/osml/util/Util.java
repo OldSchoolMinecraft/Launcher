@@ -11,6 +11,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.KeyStore;
 import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
@@ -240,12 +241,54 @@ public class Util
         return complete.digest();
     }
 
+    /**
+     * Compare a String md5 hash to a File md5 hash.
+     * @param text
+     * @param file
+     * @return true if the same, false if they're different. It is assumed to be the same file in case of errors.
+     */
+    public static boolean textToFileComparison(String text, String file)
+    {
+        try
+        {
+            File f = getInstalledFile(file);
+            String textHash = stringToMD5(text);
+            String fileHash = getMD5Checksum(file);
+            System.out.println(String.format("Comparing %s to %s:\nText hash: %s\nFile hash: %s", text, file, textHash, fileHash));
+            return textHash.equalsIgnoreCase(fileHash);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return true;
+        }
+    }
+
+    public static File getInstalledFile(String file)
+    {
+        return new File(getInstallDirectory(), file);
+    }
+
     public static String getMD5Checksum(String filename) throws Exception
     {
-        byte[] b = createChecksum(filename);
+        return checksumToString(createChecksum(filename));
+    }
+
+    public static String checksumToString(byte[] checksum)
+    {
         String result = "";
-        for (int i = 0; i < b.length; i++)
-            result += Integer.toString((b[i] & 0xff) + 0x100, 16).substring(1);
+        for (int i = 0; i < checksum.length; i++)
+            result += Integer.toString((checksum[i] & 0xff) + 0x100, 16).substring(1);
         return result;
+    }
+
+    public static String stringToMD5(String input)
+    {
+        try
+        {
+            MessageDigest digest = MessageDigest.getInstance("MD5");
+            return checksumToString(digest.digest(input.getBytes(StandardCharsets.UTF_8)));
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return "";
+        }
     }
 }
