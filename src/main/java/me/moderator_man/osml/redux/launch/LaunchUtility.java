@@ -61,7 +61,10 @@ public class LaunchUtility
                         return;
                     }
                     // build the process & start the game
-                    ProcessBuilder pb = new ProcessBuilder(javaFile.getAbsolutePath(), "-Djava.library.path=" + nativesDir.getAbsolutePath(), Redux.getInstance().getConfig().jvmArguments, "-classpath", buildClasspath(new File(gameDirectory, "bin")), "net.minecraft.client.Minecraft", username);
+                    String classpath = buildClasspath(new File(gameDirectory, "bin"));
+                    System.out.println("Classpath: " + classpath);
+                    ProcessBuilder pb = new ProcessBuilder(javaFile.getAbsolutePath(), "-Djava.library.path=" + nativesDir.getAbsolutePath(), Redux.getInstance().getConfig().jvmArguments, "-classpath", classpath, "net.minecraft.client.Minecraft", username);
+                    System.out.println("Executing launch command: " + pb.command());
                     pb.directory(gameDirectory);
                     pb.inheritIO();
                     pb.redirectErrorStream(true); // hack to get proc.waitFor() to return
@@ -94,11 +97,10 @@ public class LaunchUtility
 
     public String buildClasspath(File binDir)
     {
-        ArrayList<String> excludes = new ArrayList<>();
+        String[] cp = new String[] { "core.jar", "annotations.jar", "databind.jar", "json.jar", "lwjgl_util.jar", "lwjgl.jar", "jinput.jar", "minecraft.jar" };
         StringBuilder sb = new StringBuilder();
-        for (File file : Objects.requireNonNull(binDir.listFiles()))
-            if (!file.isDirectory() && file.getName().endsWith(".jar") && !excludes.contains(file.getName().toLowerCase()))
-                sb.append(file.getAbsolutePath() + File.pathSeparator);
+        for (String lib : cp)
+            sb.append(new File(Util.getBinPath(), lib)).append(File.pathSeparator);
         String pre = sb.toString();
         return pre.substring(0, pre.length() - 1);
     }

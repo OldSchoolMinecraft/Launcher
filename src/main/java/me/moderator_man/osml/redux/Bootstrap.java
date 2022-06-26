@@ -1,5 +1,6 @@
 package me.moderator_man.osml.redux;
 
+import me.moderator_man.osml.Main;
 import me.moderator_man.osml.util.OS;
 import me.moderator_man.osml.util.Util;
 import me.moderator_man.osml.util.ZipUtil;
@@ -8,6 +9,7 @@ import org.apache.commons.io.FileUtils;
 import javax.swing.*;
 import java.io.File;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.Objects;
 
 public class Bootstrap
@@ -23,28 +25,31 @@ public class Bootstrap
             File runtimeFile = new File(tmp, "fx-runtime.zip");
             File runtimeDir = new File(Util.getInstallDirectory(), "java/fx-runtime/");
             File currentJar = new File(Redux.class.getProtectionDomain().getCodeSource().getLocation().toURI());
+            if (!currentJar.getName().endsWith(".jar")) // tf am i supposed to do without a jar?
+                throw new RuntimeException("Runtime code-source URI location does not point to a JAR file.");
+            System.out.println("Current JAR: " + currentJar.getAbsolutePath());
             tmp.mkdirs();
             runtimeDir.mkdirs();
             if (runtimeDir.exists() && runtimeDir.isDirectory() && Objects.requireNonNull(runtimeDir.listFiles()).length == 0)
             {
+                System.out.println("Downloading JavaFX runtime files...");
                 String os = OS.getOS().name().toLowerCase();
                 FileUtils.copyURLToFile(new URL("https://os-mc.net/launcher/dl/fx-runtime-" + os + ".zip"), runtimeFile);
                 ZipUtil.extractAllTo(runtimeFile.getAbsolutePath(), runtimeDir.getAbsolutePath());
-                System.out.println("Current JAR: " + currentJar.getAbsolutePath());
-                if (!currentJar.getName().endsWith(".jar")) // tf am i supposed to do without a jar?
-                    return;
+                System.out.println("Finished downloading JavaFX runtime files.");
             }
-            StringBuilder sb = new StringBuilder();
-            sb.append("java ")
-                    .append("--module-path ")
-                    .append(new File(runtimeDir, "lib/").getAbsolutePath())
-                    .append(" --add-modules ")
-                    .append("javafx.controls,javafx.fxml,javafx.graphics")
-                    .append(" -cp ")
-                    .append(currentJar.getAbsolutePath())
-                    .append(" me.moderator_man.osml.Main");
-            String cmd = sb.toString().trim();
-            System.out.println("Executing: " + cmd);
+            String[] cmd = new String[]
+            {
+                "java",
+                "--module-path",
+                new File(runtimeDir, "lib/").getAbsolutePath(),
+                "--add-modules",
+                "javafx.controls,javafx.fxml,javafx.graphics",
+                "-cp",
+                currentJar.getAbsolutePath(),
+                "me.moderator_man.osml.Main"
+            };
+            System.out.println("Executing: " + Arrays.toString(cmd));
             Runtime.getRuntime().exec(cmd);
             FileUtils.deleteDirectory(tmp);
             System.out.println("OSML bootstrap finished, exiting...");
