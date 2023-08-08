@@ -48,7 +48,7 @@ public class MainFrame
 		frmOldSchoolMinecraft = new JFrame();
 		frmOldSchoolMinecraft.setTitle("OSML - Long Term Service");
 		frmOldSchoolMinecraft.setResizable(false);
-		frmOldSchoolMinecraft.setBounds(100, 100, 468, 250);
+		frmOldSchoolMinecraft.setBounds(100, 100, 400, 600);
 		frmOldSchoolMinecraft.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frmOldSchoolMinecraft.getContentPane().setLayout(null);
 		frmOldSchoolMinecraft.setLocationRelativeTo(null);
@@ -59,9 +59,12 @@ public class MainFrame
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
+
+		int width = frmOldSchoolMinecraft.getWidth();
+		int height = frmOldSchoolMinecraft.getHeight();
 		
 		TexturedPanel backgroundPanel = new TexturedPanel();
-		backgroundPanel.setBounds(0, 0, 457, 221);
+		backgroundPanel.setBounds(0, 0, width, height);
 		frmOldSchoolMinecraft.getContentPane().add(backgroundPanel);
 		backgroundPanel.setLayout(null);
 		
@@ -71,12 +74,12 @@ public class MainFrame
 		backgroundPanel.add(logoPanel);
 		
 		txtUsername = new JTextField();
-		txtUsername.setBounds(269, 140, 92, 20);
+		txtUsername.setBounds((width / 2) - (150 / 2), height / 2 - 28, 150, 24);
 		backgroundPanel.add(txtUsername);
 		txtUsername.setColumns(10);
 		
 		txtPassword = new JPasswordField();
-		txtPassword.setBounds(269, 165, 92, 20);
+		txtPassword.setBounds((width / 2) - (150 / 2), height / 2, 150, 24);
 		backgroundPanel.add(txtPassword);
 		
 		TransparentButton btnOptions = new TransparentButton("Options");
@@ -103,12 +106,12 @@ public class MainFrame
 		
 		JLabel lblUsername = new JLabel("Username:");
 		lblUsername.setForeground(Color.WHITE);
-		lblUsername.setBounds(213, 143, 58, 14);
+		lblUsername.setBounds((width / 2) - (150 / 2 + 75), height / 2 - 28, 150, 14);
 		backgroundPanel.add(lblUsername);
 		
 		JLabel lblPassword = new JLabel("Password:");
 		lblPassword.setForeground(Color.WHITE);
-		lblPassword.setBounds(213, 168, 58, 14);
+		lblPassword.setBounds((width / 2) - (150 / 2 + 75), height / 2, 150, 14);
 		backgroundPanel.add(lblPassword);
 		
 		ImagePanel websitePanel = new ImagePanel("/favicon.png");
@@ -148,7 +151,7 @@ public class MainFrame
 		backgroundPanel.add(lblDownloading);
 		
 		frmOldSchoolMinecraft.setFocusTraversalPolicy(new SimpleFocusTraversalPolicy(txtUsername, txtPassword, btnLogin, btnOptions));
-		
+
 		if (Main.config.rememberPassword)
 		{
 			cbRememberPassword.setSelected(true);

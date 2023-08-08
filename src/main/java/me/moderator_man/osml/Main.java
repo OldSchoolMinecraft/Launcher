@@ -5,6 +5,7 @@ import javax.swing.*;
 
 import javafx.application.Application;
 import javafx.stage.Stage;
+import me.moderator_man.osml.io.FormatReader;
 import me.moderator_man.osml.io.FormatWriter;
 import me.moderator_man.osml.redux.Redux;
 import me.moderator_man.osml.util.Logger;
@@ -20,7 +21,7 @@ public class Main extends Application
 	public static boolean firstTime = true;
 	public static boolean problematicJava = false;
 	
-	private static String getConfigPath()
+	public static String getConfigPath()
 	{
 		switch (OS.getOS())
 		{
@@ -35,10 +36,20 @@ public class Main extends Application
 	
 	public static void saveConfig()
 	{
+		if (config == null)
+			config = new Configuration();
 		File cfg = new File(getConfigPath());
 		if (cfg.exists()) cfg.delete();
 		FormatWriter<Configuration> writer = new FormatWriter<>();
 		writer.write(config, getConfigPath());
+	}
+
+	public static void loadConfig()
+	{
+		File cfg = new File(getConfigPath());
+		if (!cfg.exists()) saveConfig();
+		FormatReader<Configuration> reader = new FormatReader<>();
+		config = reader.read(getConfigPath());
 	}
 
 	@Override

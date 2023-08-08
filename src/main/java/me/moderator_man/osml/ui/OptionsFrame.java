@@ -57,7 +57,7 @@ public class OptionsFrame extends JDialog
             backgroundPanel.add(lblRammb);
 
             JSpinner ramAllocation = new JSpinner();
-            ramAllocation.setModel(new SpinnerNumberModel(new Integer(1024), new Integer(1024), null, new Integer(1)));
+            ramAllocation.setModel(new SpinnerNumberModel(1024, 1024, null, 1));
             ramAllocation.setBounds(10, 28, 55, 20);
             backgroundPanel.add(ramAllocation);
 

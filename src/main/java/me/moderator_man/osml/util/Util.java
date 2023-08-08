@@ -1,6 +1,6 @@
 package me.moderator_man.osml.util;
 
-import java.awt.Desktop;
+import java.awt.*;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URI;
@@ -11,12 +11,12 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.KeyStore;
 import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Enumeration;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.regex.Matcher;
@@ -29,6 +29,7 @@ import org.json.JSONObject;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.TrustManagerFactory;
+import javax.swing.*;
 
 public class Util
 {
@@ -56,6 +57,15 @@ public class Util
         Matcher mat = pattern.matcher(email);
         return mat.matches();
     }
+
+    public static void changeFont(Component component, Font font)
+    {
+        component.setFont(font);
+        if (component instanceof Container)
+            for (Component child : ((Container) component).getComponents())
+                changeFont(child, font);
+    }
+
 
     public static JSONObject postJSON(String url, JSONObject payload)
     {
@@ -159,6 +169,15 @@ public class Util
         }
     }
 
+    public static String cleanFileName(String fileName)
+    {
+        // Define the regex pattern for invalid characters in file or folder names
+        String regex = "[\\\\/:*?\"<>|]"; // Add any additional invalid characters as needed
+
+        // Remove the invalid characters using regex
+        return fileName.replaceAll(regex, "");
+    }
+
     public static String getNativesPath()
     {
         return new File(getInstallDirectory(), "bin/natives/").getAbsolutePath();
@@ -193,6 +212,19 @@ public class Util
     {
         return UUID.randomUUID().toString().replaceAll("-", "");
     }
+
+    public static void setUIFont(javax.swing.plaf.FontUIResource f)
+    {
+        Enumeration<Object> keys = UIManager.getDefaults().keys();
+        while (keys.hasMoreElements())
+        {
+            Object key = keys.nextElement();
+            Object value = UIManager.get(key);
+            if (value instanceof javax.swing.plaf.FontUIResource)
+                UIManager.put(key, f);
+        }
+    }
+
 
     public static String getInstallDirectory()
     {
