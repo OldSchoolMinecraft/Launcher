@@ -5,14 +5,9 @@ import com.google.gson.Gson;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 import me.moderator_man.osml.instance.InstanceManager;
-import me.moderator_man.osml.redux.Bootstrap;
 import me.moderator_man.osml.util.Util;
 
-import javax.swing.*;
-import javax.swing.plaf.FontUIResource;
-import java.awt.*;
 import java.io.*;
-import java.util.Objects;
 
 public class OSML
 {
@@ -47,7 +42,7 @@ public class OSML
         instanceManager.init();
 
 
-        IntelliJTheme.setup(Bootstrap.class.getResourceAsStream("/themes/Spacegray.theme.json"));
+        IntelliJTheme.setup(OSML.class.getResourceAsStream("/themes/Spacegray.theme.json"));
 
         mainUI = new MainUI();
         mainUI.init();

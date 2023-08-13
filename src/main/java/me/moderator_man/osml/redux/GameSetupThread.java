@@ -75,9 +75,8 @@ public class GameSetupThread extends Thread
                 if (currentHash.equals(latestHash))
                     return;
             }
-            if (!Redux.getInstance().getConfig().disableUpdates)
-                FileUtils.copyURLToFile(new URL("https://os-mc.net/launcher/libraries/minecraft.jar"), clientFile);
-            else System.out.println("New client update available, ignored by user's config");
+            //TODO: ignore client updates?
+            FileUtils.copyURLToFile(new URL("https://os-mc.net/launcher/libraries/minecraft.jar"), clientFile);
         } catch (Exception ex) {
             flagPipe.pipe(false);
             ex.printStackTrace();

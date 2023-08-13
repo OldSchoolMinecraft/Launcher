@@ -52,10 +52,7 @@ public class DownloadSystem extends Thread
 			default:
 				downloadList("https://os-mc.net/launcher/natives/windows/", StaticData.natives_windows, Util.getNativesPath());
 				break;
-			case Windows:
-				downloadList("https://os-mc.net/launcher/natives/windows/", StaticData.natives_windows, Util.getNativesPath());
-				break;
-			case Mac:
+            case Mac:
 				downloadList("https://os-mc.net/launcher/natives/mac/", StaticData.natives_mac, Util.getNativesPath());
 				break;
 			case Linux:
@@ -77,10 +74,9 @@ public class DownloadSystem extends Thread
 		try
 		{
 			File file = new File(Util.getBinPath() + "minecraft.jar");
-			
-			if (Main.config.disableUpdate)
-				return;
-			
+
+			//TODO: disable updates?
+
 			if (!file.exists())
 			{
 				if (hasName)

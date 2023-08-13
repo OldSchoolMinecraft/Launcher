@@ -5,6 +5,7 @@ import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
+import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -23,9 +24,11 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import me.moderator_man.osml.Configuration;
-import me.moderator_man.osml.Main;
+import me.moderator_man.osml.swing.OSML;
 import org.json.JSONObject;
 
+import javax.imageio.ImageIO;
+import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.TrustManagerFactory;
@@ -116,6 +119,24 @@ public class Util
         return config;
     }
 
+    public static Image getImageFromURL(String urlLocation)
+    {
+        try
+        {
+            URL url = new URL(urlLocation);
+            URLConnection conn = url.openConnection();
+            conn.setRequestProperty("User-Agent", "Mozilla/5.0 (X11; Linux x86_64; rv:109.0) Gecko/20100101 Firefox/116.0");
+
+            conn.connect();
+            InputStream urlStream = conn.getInputStream();
+            return ImageIO.read(urlStream);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            System.out.println("Failed to get image from URL: " + urlLocation);
+            return null;
+        }
+    }
+
     public static void setTrustStore(final String[] trustStoreString, final String password) throws Exception
     {
         final TrustManagerFactory trustManagerFactory = TrustManagerFactory.getInstance("X509");
@@ -124,7 +145,7 @@ public class Util
         keystore.load(Files.newInputStream(ksPath), password.toCharArray());
         for (final String trustStore : trustStoreString)
         {
-            final InputStream keystoreStream = Main.class.getResourceAsStream(trustStore);
+            final InputStream keystoreStream = OSML.class.getResourceAsStream(trustStore);
             final CertificateFactory cf = CertificateFactory.getInstance("X.509");
             final Certificate crt = cf.generateCertificate(keystoreStream);
             Logger.log("Added certificate for " + ((X509Certificate)crt).getSubjectDN());

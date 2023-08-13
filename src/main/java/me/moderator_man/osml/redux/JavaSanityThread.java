@@ -1,6 +1,5 @@
 package me.moderator_man.osml.redux;
 
-import javafx.application.Platform;
 import me.moderator_man.osml.util.*;
 import org.apache.commons.io.FileUtils;
 
@@ -25,11 +24,8 @@ public class JavaSanityThread extends Thread
     private void pipeMessage(String msg, String color)
     {
         System.out.println("Message for UI: " + msg);
-        Platform.runLater(() ->
-        {
-            if (messagePipe == null) return;
-            messagePipe.pipe(msg, color);
-        });
+        if (messagePipe == null) return;
+        messagePipe.pipe(msg, color);
     }
 
     public void run()
