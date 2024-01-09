@@ -70,7 +70,7 @@ public class GameSetupThread extends Thread
             File clientFile = new File(Util.getBinPath(), "minecraft.jar");
             if (clientFile.exists())
             {
-                String latestHash = QueryAPI.get("https://os-mc.net/launcher/versioncheck.php");
+                String latestHash = QueryAPI.get("https://os-mc.net/launcher/versioncheck.txt");
                 String currentHash = Util.getMD5Checksum(clientFile.getAbsolutePath());
                 if (currentHash.equals(latestHash))
                     return;

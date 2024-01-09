@@ -9,6 +9,7 @@ import me.moderator_man.osml.util.*;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Objects;
 
 public class LaunchUtility
@@ -63,8 +64,16 @@ public class LaunchUtility
                     // build the process & start the game
                     String classpath = buildClasspath(new File(gameDirectory, "bin"));
                     System.out.println("Classpath: " + classpath);
-                    ProcessBuilder pb = new ProcessBuilder(javaFile.getAbsolutePath(), "-Djava.library.path=" + nativesDir.getAbsolutePath(), Redux.getInstance().getConfig().jvmArguments, "-classpath", classpath, "net.minecraft.client.Minecraft", username);
-                    System.out.println("Executing launch command: " + pb.command());
+                    ArrayList<String> command = new ArrayList<>();
+                    command.add(javaFile.getAbsolutePath());
+                    command.add("-Djava.library.path=" + nativesDir.getAbsolutePath());
+                    command.addAll(Arrays.asList(Redux.getInstance().getConfig().jvmArguments.split(" ")));
+                    command.add("-classpath");
+                    command.add(classpath);
+                    command.add("net.minecraft.client.Minecraft");
+                    command.add(username);
+                    ProcessBuilder pb = new ProcessBuilder(command);
+                    System.out.println("Executing launch command: " + command);
                     pb.directory(gameDirectory);
                     pb.inheritIO();
                     pb.redirectErrorStream(true); // hack to get proc.waitFor() to return
