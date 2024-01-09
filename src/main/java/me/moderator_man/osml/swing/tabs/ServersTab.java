@@ -8,16 +8,13 @@ import me.moderator_man.osml.util.Util;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
-import java.awt.event.InputEvent;
 import java.awt.event.MouseListener;
-import java.awt.event.MouseWheelEvent;
-import java.awt.event.MouseWheelListener;
-import java.sql.SQLOutput;
-import java.util.ArrayList;
 
 public class ServersTab extends AbstractTab
 {
     private JPanel root = new ImagePanel("stone.gif");
+    private DefaultListModel<ServerListItem> listModel;
+    private JList<ServerListItem> serverList;
     private FontManager fontManager;
     private MainUI mainUI;
 
@@ -31,76 +28,105 @@ public class ServersTab extends AbstractTab
     @Override
     public JPanel build()
     {
-        root.setLayout(null);
+        listModel = new DefaultListModel<>();
 
-        JScrollPane scrollPane = new JScrollPane();
-        scrollPane.setLayout(null);
-        scrollPane.setBounds(0, 0, 400, 600 - 130);
-        scrollPane.setPreferredSize(new Dimension(400, 600 - 130));
-        scrollPane.setMaximumSize(new Dimension(400, 600 - 130));
-        scrollPane.setOpaque(false);
-        //scrollPane.setBackground(new Color(0, 0, 0, 0));
-        //scrollPane.setForeground(new Color(0, 0, 0, 0));
-        scrollPane.setBorder(null);
+        listModel.addElement(new ServerListItem("Old School Minecraft", "Undeniably the #1 vanilla Beta 1.7.3 server", "os-mc.net", 0, 20));
+        listModel.addElement(new ServerListItem("AlphaPlace", "Minecraft Alpha Server! Reasonings on https://alpha.place/", "alphaplace.net", 0, 20));
 
-        ArrayList<ServerListItem> servers = new ArrayList<>(); //TODO: get from johny's server list
+        serverList = new JList<>(listModel);
+        serverList.setCellRenderer(new CustomListRenderer());
+        serverList.setOpaque(false);
+        serverList.setBackground(new Color(0, 0, 0, 0));
 
-        for (int i = 0; i < 25; i++) servers.add(new ServerListItem("Old School Minecraft", "Test", "os-mc.net", 0, 100));
-
-        JPanel lastItem = null;
-        for (ServerListItem server : servers)
-        {
-            JPanel serverListItemPanel = buildServerListItemPanel(server);
-
-            // Add a custom MouseWheelListener to let events pass through
-            serverListItemPanel.addMouseWheelListener(e ->
-            {
-                // Get the parent scroll pane and dispatch the event to it
-                JViewport viewport = scrollPane.getViewport();
-                if (viewport != null) {
-                    e.setSource(viewport);
-                    viewport.dispatchEvent(SwingUtilities.convertMouseEvent(serverListItemPanel, e, viewport));
-                }
-            });
-
-            serverListItemPanel.setLayout(null);
-            serverListItemPanel.setBounds(0, (lastItem == null) ? 5 : (lastItem.getY() + 90), 400, 85);
-            serverListItemPanel.setOpaque(false);
-            //serverListItemPanel.setBackground(new Color(0, 0, 0, 0));
-            serverListItemPanel.setBorder(BorderFactory.createLineBorder(Color.GRAY));
-            scrollPane.add(serverListItemPanel);
-            lastItem = serverListItemPanel;
-        }
+        JScrollPane scrollPane = new JScrollPane(serverList);
+        scrollPane.getViewport().setOpaque(false);
+        scrollPane.setBackground(new Color(0, 0, 0, 0));
 
         root.add(scrollPane);
 
         return root;
     }
 
-    private JPanel buildServerListItemPanel(ServerListItem server)
+    public class CustomListRenderer extends JPanel implements ListCellRenderer<ServerListItem>
     {
-        JLabel lblServerName = new JLabel(server.getServerName() + " (" + server.getPlayerCount() + "/" + server.getMaxPlayerSlots() + ")");
-        lblServerName.setBounds(5, 5, 400, 20);
+        private JLabel lblServerName;
+        private JTextPane lblServerDescription;
+        private JLabel lblServerIP;
+        private JLabel lblPlayerCount;
+        private JButton btnJoin;
 
-        JLabel lblServerDescription = new JLabel(server.getServerDescription());
-        lblServerDescription.setBounds(5, 30, 400, 20);
+        public CustomListRenderer()
+        {
+            setLayout(null);
+            setBorder(new EmptyBorder(5, 5, 5, 5));
 
-        JButton btnJoin = new JButton("Join");
-        btnJoin.setBounds(400 - 120, 30, 90, 30);
+            lblServerName = new JLabel();
+            lblServerDescription = new JTextPane();
+            lblServerIP = new JLabel();
+            lblPlayerCount = new JLabel();
+            btnJoin = new JButton("Join");
 
-        JPanel serverListItemPanel = new JPanel();
-        serverListItemPanel.setLayout(null);
-        serverListItemPanel.setSize(400, 85);
+            btnJoin.addActionListener((event) -> System.out.println("Join button pressed"));
 
-        serverListItemPanel.add(lblServerName);
-        serverListItemPanel.add(lblServerDescription);
-        serverListItemPanel.add(btnJoin);
+            add(lblServerName);
+            add(lblServerDescription);
+            //add(lblServerIP);
+            add(lblPlayerCount);
+            add(btnJoin);
+        }
 
-        btnJoin.setFont(fontManager.getBoldFont().deriveFont(Font.BOLD, 14));
-        lblServerDescription.setFont(fontManager.getItalicFont().deriveFont(Font.ITALIC, 11));
-        lblServerName.setFont(fontManager.getBoldFont().deriveFont(Font.BOLD, 14));
+        @Override
+        public Component getListCellRendererComponent(JList<? extends ServerListItem> list, ServerListItem value, int index, boolean isSelected, boolean cellHasFocus)
+        {
+            lblServerName.setText(value.getServerName());
+            lblServerDescription.setText(value.getServerDescription());
+            lblServerIP.setText(value.getServerIP());
+            String playerCountString = "(" + value.getPlayerCount() + "/" + value.getMaxPlayerSlots() + ")";
+            lblPlayerCount.setText(playerCountString);
 
-        return serverListItemPanel;
+            Util.changeFont(root, fontManager.getNormalFont().deriveFont(Font.PLAIN, 14));
+            lblServerName.setFont(fontManager.getBoldFont().deriveFont(Font.BOLD, 14));
+
+            FontMetrics rootFontMetrics = root.getFontMetrics(root.getFont());
+            FontMetrics serverNameMetrics = lblServerName.getFontMetrics(lblServerName.getFont());
+
+            lblServerName.setBounds(5, 15, serverNameMetrics.stringWidth(value.getServerName()), 20);
+            lblServerDescription.setBounds(0, 30, 270, 40);
+            lblServerIP.setBounds(5, 45, rootFontMetrics.stringWidth(value.getServerIP()), 20);
+            lblPlayerCount.setBounds(serverNameMetrics.stringWidth(value.getServerName()) + 10, 15, rootFontMetrics.stringWidth(playerCountString), 20);
+            btnJoin.setBounds(400 - 130, 15, 125, 30);
+
+            lblServerDescription.setFont(fontManager.getItalicFont().deriveFont(Font.ITALIC, 11));
+            lblServerDescription.setBackground(new Color(0, 0, 0, 0));
+            lblServerDescription.setOpaque(false);
+
+            setPreferredSize(new Dimension(400, 80));
+
+            if (isSelected)
+            {
+                setBackground(list.getSelectionBackground());
+                setForeground(list.getSelectionForeground());
+            } else {
+                setBackground(list.getBackground());
+                setForeground(list.getForeground());
+            }
+
+            return this;
+        }
+
+        @Override
+        public void addMouseListener(MouseListener listener)
+        {
+            super.addMouseListener(listener);
+            btnJoin.addMouseListener(listener);
+        }
+
+        @Override
+        public void removeMouseListener(MouseListener listener)
+        {
+            super.removeMouseListener(listener);
+            btnJoin.removeMouseListener(listener);
+        }
     }
 
     public static class ServerListItem

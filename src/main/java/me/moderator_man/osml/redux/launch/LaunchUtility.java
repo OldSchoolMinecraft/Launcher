@@ -2,11 +2,14 @@ package me.moderator_man.osml.redux.launch;
 
 import me.moderator_man.osml.redux.GameSetupThread;
 import me.moderator_man.osml.redux.JavaSanityThread;
+import me.moderator_man.osml.redux.Redux;
 import me.moderator_man.osml.redux.process.GameProcessRunnable;
 import me.moderator_man.osml.redux.process.direct.DirectGameProcess;
 import me.moderator_man.osml.util.*;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Objects;
 
 public class LaunchUtility
 {
@@ -60,7 +63,7 @@ public class LaunchUtility
                     // build the process & start the game
                     String classpath = buildClasspath(new File(gameDirectory, "bin"));
                     System.out.println("Classpath: " + classpath);
-                    ProcessBuilder pb = new ProcessBuilder(javaFile.getAbsolutePath(), "-Djava.library.path=" + nativesDir.getAbsolutePath(), "" /* TODO: JVM arguments */, "-classpath", classpath, "net.minecraft.client.Minecraft", username);
+                    ProcessBuilder pb = new ProcessBuilder(javaFile.getAbsolutePath(), "-Djava.library.path=" + nativesDir.getAbsolutePath(), Redux.getInstance().getConfig().jvmArguments, "-classpath", classpath, "net.minecraft.client.Minecraft", username);
                     System.out.println("Executing launch command: " + pb.command());
                     pb.directory(gameDirectory);
                     pb.inheritIO();

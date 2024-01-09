@@ -80,7 +80,7 @@ public class MainUI
         tabToolBar.add(Box.createHorizontalStrut(60));
         tabToolBar.add(lblUsername);
         String avatarUsername = "MHF_Steve"; //TODO: use actual player name
-        ImageIcon steveFace = new ImageIcon(Util.getImageFromURL("https://mc-heads.net/avatar/" + avatarUsername + "/24"));
+        ImageIcon steveFace = new ImageIcon(ImageIO.read(new URL("https://mc-heads.net/avatar/" + avatarUsername + "/24")));
         JLabel lblSteve = new JLabel(steveFace);
         //tabToolBar.add(Box.createHorizontalStrut(5));
         tabToolBar.add(lblSteve);
