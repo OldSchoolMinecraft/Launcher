@@ -40,7 +40,7 @@ public class Bootstrap
             }
             String[] cmd = new String[]
             {
-                "java",
+                findJava(),
                 "--module-path",
                 new File(runtimeDir, "lib/").getAbsolutePath(),
                 "--add-modules",
@@ -58,6 +58,69 @@ public class Bootstrap
             ex.printStackTrace();
             notify(ex.getMessage(), "Bootstrapping failed");
         }
+    }
+
+    private static String findJava()
+    {
+        return (OS.getOS() == OS.Windows) ? findJavaWindows() : findJavaUnix();
+    }
+
+    private static String findJavaWindows()
+    {
+        String[] pathDirs = System.getenv("PATH").split(";");
+        for (String pathDir : pathDirs)
+        {
+            File javaFile = new File(pathDir, "java.exe");
+            if (javaFile.exists()) return javaFile.getAbsolutePath();
+        }
+        return null;
+    }
+
+    private static String findJavaUnix()
+    {
+        try
+        {
+            Process process = Runtime.getRuntime().exec("whereis -b java");
+            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+            String line;
+            String latestJavaPath = null;
+
+            while ((line = reader.readLine()) != null)
+            {
+                String[] locations = line.split(":");
+                if (locations.length > 1)
+                {
+                    // Use the first location returned by 'whereis'
+                    latestJavaPath = locations[1].trim();
+                    // Follow symlinks to get the actual location
+                    latestJavaPath = getRealPath(latestJavaPath);
+                    break;
+                }
+            }
+
+            process.waitFor();
+            if (latestJavaPath != null) return latestJavaPath;
+        } catch (Exception e) {
+            e.printStackTrace(System.err);
+            JOptionPane.showMessageDialog(null, e.getMessage());
+        }
+
+        return null;
+    }
+
+    private static String getRealPath(String path)
+    {
+        try
+        {
+            Process process = Runtime.getRuntime().exec("realpath " + path);
+            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+            String realPath = reader.readLine();
+            process.waitFor();
+            return realPath;
+        } catch (Exception e) {
+            e.printStackTrace(System.err);
+        }
+        return path; // Return the original path if 'realpath' command fails
     }
 
     private static void notify(String msg, String title)
