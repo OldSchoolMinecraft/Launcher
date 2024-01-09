@@ -1,13 +1,14 @@
 package me.moderator_man.osml.redux;
 
-import me.moderator_man.osml.Main;
 import me.moderator_man.osml.util.OS;
 import me.moderator_man.osml.util.Util;
 import me.moderator_man.osml.util.ZipUtil;
 import org.apache.commons.io.FileUtils;
 
 import javax.swing.*;
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.Objects;

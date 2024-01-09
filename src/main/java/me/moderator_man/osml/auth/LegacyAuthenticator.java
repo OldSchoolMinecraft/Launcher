@@ -116,7 +116,7 @@ public class LegacyAuthenticator
         request.put("password", password);
         request.put("requestUser", true);
 
-        JSONObject response = postJSON("https://authserver.gethydra.org/authenticate", request);
+        JSONObject response = postJSON("https://os-mc.net/api/v1/authenticate", request);
 
         if (response.has("error"))
         {

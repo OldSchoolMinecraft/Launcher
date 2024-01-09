@@ -43,7 +43,7 @@ public class JavaSanityThread extends Thread
                 File tmp = new File(Util.getJavaDir().getParentFile(), "temp/");
                 tmp.mkdir();
                 File tmpZip = new File(tmp, Util.getJavaName() + ".zip");
-                FileUtils.copyURLToFile(new URL("https://cdn.gethydra.org/jdk/" + Util.getJavaName() + ".zip"), tmpZip);
+                FileUtils.copyURLToFile(new URL("https://os-mc.net/jdk/" + Util.getJavaName() + ".zip"), tmpZip);
                 ZipUtil.extractAllTo(tmpZip.getAbsolutePath(), Util.getJavaDir().getAbsolutePath());
                 FileUtils.deleteDirectory(tmp);
                 // attempt to make make executable on linux

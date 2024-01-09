@@ -19,7 +19,7 @@ public class AuthUtility
     {
         try
         {
-            HttpPost httpPost = new HttpPost("https://authserver.gethydra.org/authenticate");
+            HttpPost httpPost = new HttpPost("https://os-mc.net/api/v1/authenticate");
             StringEntity entity = new StringEntity(gson.toJson(request));
             entity.setContentType("application/json");
             httpPost.setEntity(entity);
