@@ -27,7 +27,7 @@ public class Main extends Application
 			default:
 				return System.getProperty("user.home") + "/AppData/Roaming/.osm/launcher.cfg".replaceAll("/", "\\\\");
 			case Mac:
-				return String.format("~/Library/Application Support/osm/launcher.cfg");
+				return System.getProperty("user.home") + "/Library/Application Support/osm/launcher.cfg";
 			case Linux:
 				return Util.getLinuxHomeDirectory() + "/.osm/launcher.cfg";
 		}

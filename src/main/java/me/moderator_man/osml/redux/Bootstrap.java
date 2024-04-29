@@ -1,6 +1,7 @@
 package me.moderator_man.osml.redux;
 
 import me.moderator_man.osml.util.OS;
+import me.moderator_man.osml.util.TrackedFileDownload;
 import me.moderator_man.osml.util.Util;
 import me.moderator_man.osml.util.ZipUtil;
 import org.apache.commons.io.FileUtils;
@@ -21,6 +22,9 @@ public class Bootstrap
 
         try
         {
+            SwingProgressIndicator progressIndicator = new SwingProgressIndicator("OSML Initial Setup", "Downloading files. Please wait...");
+            progressIndicator.show();
+
             new File(Util.getInstallDirectory()).mkdirs();
             File tmp = new File(Util.getInstallDirectory(), "temp/");
             File runtimeFile = new File(tmp, "fx-runtime.zip");
@@ -35,8 +39,15 @@ public class Bootstrap
             {
                 System.out.println("Downloading JavaFX runtime files...");
                 String os = OS.getOS().name().toLowerCase();
-                FileUtils.copyURLToFile(new URL("https://os-mc.net/launcher/dl/fx-runtime-" + os + ".zip"), runtimeFile);
-                ZipUtil.extractAllTo(runtimeFile.getAbsolutePath(), runtimeDir.getAbsolutePath());
+
+                TrackedFileDownload runtimeDL = new TrackedFileDownload("https://os-mc.net/launcher/dl/fx-runtime-" + os + ".zip", runtimeFile);
+
+                runtimeDL.setProgressPipe((progress) -> SwingUtilities.invokeLater(() -> progressIndicator.updateProgress(progress)));
+                runtimeDL.setThrowablePipe((throwable) -> JOptionPane.showMessageDialog(null, "An error has occurred:\n" + throwable.getMessage(), "Oh noes!", JOptionPane.ERROR_MESSAGE));
+                runtimeDL.setCompletedPipe(() -> ZipUtil.extractAllTo(runtimeFile.getAbsolutePath(), runtimeDir.getAbsolutePath()));
+
+                runtimeDL.start();
+
                 System.out.println("Finished downloading JavaFX runtime files.");
             }
             String[] cmd = new String[]
@@ -63,6 +74,8 @@ public class Bootstrap
                 System.out.println("Exit code: " + exit);
             }
             System.out.println("OSML bootstrap finished, exiting...");
+            progressIndicator.hide();
+            progressIndicator.dispose();
             System.exit(0);
         } catch (Exception ex) {
             ex.printStackTrace();
