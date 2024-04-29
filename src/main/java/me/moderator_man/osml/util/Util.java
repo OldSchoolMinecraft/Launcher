@@ -153,7 +153,7 @@ public class Util
             default:
                 return new File(home + "/AppData/Roaming");
             case Mac:
-                return new File("~/Library/Application Support");
+                return new File(home + "/Library/Application Support");
             case Linux:
                 return new File(getLinuxHomeDirectory());
         }
@@ -204,7 +204,7 @@ public class Util
             case Windows:
                 return backslashes(System.getProperty("user.home") + "/AppData/Roaming/.osm/");
             case Mac:
-                return "~/Library/Application Support/osm/";
+                return System.getProperty("user.home") + "/Library/Application Support/osm/";
             case Linux:
                 return getLinuxHomeDirectory() + "/.osm/";
             case Unsupported:
