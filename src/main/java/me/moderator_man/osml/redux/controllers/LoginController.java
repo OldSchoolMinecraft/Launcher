@@ -10,13 +10,19 @@ import javafx.stage.Stage;
 import me.moderator_man.osml.Main;
 import me.moderator_man.osml.redux.LauncherConfig;
 import me.moderator_man.osml.redux.Redux;
+import me.moderator_man.osml.redux.TextAreaInputDialog;
 import me.moderator_man.osml.redux.auth.AuthUtility;
 import me.moderator_man.osml.redux.auth.YggdrasilAuthRequest;
 import me.moderator_man.osml.redux.auth.YggdrasilAuthResponse;
+import me.moderator_man.osml.redux.auth.YggdrasilProfile;
 import me.moderator_man.osml.redux.launch.LaunchUtility;
 import me.moderator_man.osml.util.Util;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.Optional;
+import java.util.UUID;
 
 public class LoginController extends ReduxController
 {
@@ -69,13 +75,42 @@ public class LoginController extends ReduxController
             lblStatus.setStyle("-fx-text-fill: #41af19"); // green
 
             AuthUtility auth = new AuthUtility();
-            YggdrasilAuthResponse authRes = auth.makeRequest(new YggdrasilAuthRequest(txtUsername.getText(), txtPassword.getText()));
-            if (authRes == null || authRes.accessToken == null)
+            YggdrasilAuthResponse authRes = null;
+
+            try
             {
-                lblStatus.setText("Invalid username or password (or connection failed)");
-                lblStatus.setStyle("-fx-text-fill: " + "#b01919"); // red
-                setLock(false);
-                return;
+                authRes = auth.makeRequest(new YggdrasilAuthRequest(txtUsername.getText(), txtPassword.getText()));
+                if (authRes == null || authRes.accessToken == null)
+                {
+                    lblStatus.setText("Invalid username or password (or API is down)");
+                    lblStatus.setStyle("-fx-text-fill: " + "#b01919"); // red
+                    setLock(false);
+                    return;
+                }
+            } catch (IOException ex) {
+                // Create the new dialog
+                TextAreaInputDialog dialog = new TextAreaInputDialog("Username...");
+                dialog.setHeaderText("There appears to be an issue with the API.\nPlease provide an offline username to play with.");
+                dialog.setGraphic(null);
+
+                // Show the dialog and capture the result.
+                Optional<String> result = dialog.showAndWait();
+
+                // If the "Okay" button was clicked, the result will contain our String in the get() method
+                if (result.isPresent())
+                {
+                    authRes = new YggdrasilAuthResponse();
+                    authRes.selectedProfile = new YggdrasilProfile();
+                    authRes.selectedProfile.name = result.get();
+                    authRes.selectedProfile.id = "N/A";
+                    authRes.accessToken = "N/A";
+                    authRes.clientToken = UUID.randomUUID().toString();
+                } else {
+                    lblStatus.setText("Invalid username or password (or connection failed)");
+                    lblStatus.setStyle("-fx-text-fill: " + "#b01919"); // red
+                    setLock(false);
+                    return;
+                }
             }
 
             LaunchUtility launch = new LaunchUtility();
@@ -93,7 +128,7 @@ public class LoginController extends ReduxController
             launch.setLaunchResultPipe((flag) ->
             {
                 if (flag && config.hideLauncher)
-                    Platform.runLater(() -> Redux.getInstance().getPrimaryStage().hide());
+                    Platform.runLater(() -> System.exit(0));
             });
 
             config.username = txtUsername.getText();

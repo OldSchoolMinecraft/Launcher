@@ -13,7 +13,7 @@ import me.moderator_man.osml.util.Util;
 
 public class Main extends Application
 {
-	public static final int VERSION = 21;
+	public static final int VERSION = 23;
 
 	public static Configuration config;
 	public static boolean updateAvailable = false;

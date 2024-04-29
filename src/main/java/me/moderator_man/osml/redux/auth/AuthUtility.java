@@ -9,26 +9,21 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClients;
 
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
 public class AuthUtility
 {
     private static final Gson gson = new Gson();
 
-    public YggdrasilAuthResponse makeRequest(YggdrasilAuthRequest request)
+    public YggdrasilAuthResponse makeRequest(YggdrasilAuthRequest request) throws IOException
     {
-        try
-        {
-            HttpPost httpPost = new HttpPost("https://os-mc.net/api/v1/authenticate");
-            StringEntity entity = new StringEntity(gson.toJson(request));
-            entity.setContentType("application/json");
-            httpPost.setEntity(entity);
-            HttpClient client = HttpClients.createDefault();
-            HttpResponse response = client.execute(httpPost);
-            return gson.fromJson(IOUtils.toString(response.getEntity().getContent(), StandardCharsets.UTF_8), YggdrasilAuthResponse.class);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            return null;
-        }
+        HttpPost httpPost = new HttpPost("https://os-mc.net/api/v1/authenticate");
+        StringEntity entity = new StringEntity(gson.toJson(request));
+        entity.setContentType("application/json");
+        httpPost.setEntity(entity);
+        HttpClient client = HttpClients.createDefault();
+        HttpResponse response = client.execute(httpPost);
+        return gson.fromJson(IOUtils.toString(response.getEntity().getContent(), StandardCharsets.UTF_8), YggdrasilAuthResponse.class);
     }
 }

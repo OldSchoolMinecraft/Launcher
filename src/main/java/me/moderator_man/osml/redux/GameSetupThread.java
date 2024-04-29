@@ -4,6 +4,9 @@ import me.moderator_man.osml.util.*;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
 
 public class GameSetupThread extends Thread
@@ -31,70 +34,53 @@ public class GameSetupThread extends Thread
         }
     }
 
-    private void downloadLibraries()
+    private void downloadLibraries() throws IOException
     {
         for (String lib : StaticData.libraries)
         {
-            try
-            {
-                File targetFile = new File(Util.getBinPath(), lib);
-                if (targetFile.exists()) continue;
-                FileUtils.copyURLToFile(new URL("https://os-mc.net/launcher/libraries/" + lib), targetFile);
-            } catch (Exception ex) {
-                flagPipe.pipe(false);
-                ex.printStackTrace();
-            }
+            File targetFile = new File(Util.getBinPath(), lib);
+            if (targetFile.exists()) continue;
+            FileUtils.copyURLToFile(new URL("https://os-mc.net/launcher/libraries/" + lib), targetFile);
         }
     }
 
-    private void downloadNatives()
+    private void downloadNatives() throws IOException
     {
         for (String lib : getNatives())
         {
-            try
-            {
-                File targetFile = new File(Util.getNativesPath(), lib);
-                if (targetFile.exists()) continue;
-                FileUtils.copyURLToFile(new URL("https://os-mc.net/launcher/natives/" + OS.getOS().name().toLowerCase() + "/" + lib), targetFile);
-            } catch (Exception ex) {
-                flagPipe.pipe(false);
-                ex.printStackTrace();
-            }
+            File targetFile = new File(Util.getNativesPath(), lib);
+            if (targetFile.exists()) continue;
+            FileUtils.copyURLToFile(new URL("https://os-mc.net/launcher/natives/" + OS.getOS().name().toLowerCase() + "/" + lib), targetFile);
         }
     }
 
-    private void downloadClient()
+    private void downloadClient() throws Exception
     {
-        try
+        File clientFile = new File(Util.getBinPath(), "minecraft.jar");
+        if (clientFile.exists())
         {
-            File clientFile = new File(Util.getBinPath(), "minecraft.jar");
-            if (clientFile.exists())
+            try
             {
-                String latestHash = QueryAPI.get("https://os-mc.net/launcher/versioncheck.txt");
-                String currentHash = Util.getMD5Checksum(clientFile.getAbsolutePath());
-                if (currentHash.equals(latestHash))
+                String localHash = Util.getMD5Checksum(clientFile.getAbsolutePath());
+                if (QueryAPI.checkHash("https://os-mc.net/launcher/versioncheck.txt", localHash))
                     return;
+            } catch (FileNotFoundException ignored) {
+                return; // the API is down, do not attempt download
             }
-            if (!Redux.getInstance().getConfig().disableUpdates)
-                FileUtils.copyURLToFile(new URL("https://os-mc.net/launcher/libraries/minecraft.jar"), clientFile);
-            else System.out.println("New client update available, ignored by user's config");
-        } catch (Exception ex) {
-            flagPipe.pipe(false);
-            ex.printStackTrace();
         }
+
+        if (!Redux.getInstance().getConfig().disableUpdates)
+            FileUtils.copyURLToFile(new URL("https://os-mc.net/launcher/libraries/minecraft.jar"), clientFile);
+        else System.out.println("New client update available, ignored by user's config");
     }
 
     private String[] getNatives()
     {
-        switch (OS.getOS())
+        return switch (OS.getOS())
         {
-            default:
-            case Windows:
-                return StaticData.natives_windows;
-            case Mac:
-                return StaticData.natives_mac;
-            case Linux:
-                return StaticData.natives_linux;
-        }
+            default -> StaticData.natives_windows;
+            case Mac -> StaticData.natives_mac;
+            case Linux -> StaticData.natives_linux;
+        };
     }
 }

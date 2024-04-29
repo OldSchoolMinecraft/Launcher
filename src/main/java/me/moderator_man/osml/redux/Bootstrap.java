@@ -50,9 +50,18 @@ public class Bootstrap
                 currentJar.getAbsolutePath(),
                 "me.moderator_man.osml.Main"
             };
+            boolean debug = args.length >= 1 && args[0].equalsIgnoreCase("debug");
+            ProcessBuilder pb = new ProcessBuilder(cmd);
             System.out.println("Executing: " + Arrays.toString(cmd));
-            Runtime.getRuntime().exec(cmd);
+            if (debug) pb.inheritIO();
+            Process proc = pb.start();
             FileUtils.deleteDirectory(tmp);
+            if (debug)
+            {
+                int exit = proc.waitFor();
+                while (proc.isAlive()) {}
+                System.out.println("Exit code: " + exit);
+            }
             System.out.println("OSML bootstrap finished, exiting...");
             System.exit(0);
         } catch (Exception ex) {
